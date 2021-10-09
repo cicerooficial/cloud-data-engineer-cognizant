@@ -1,0 +1,172 @@
+- Web Services
+
+  - O que são Web Services:
+    Serviços Web ou Web Services são soluções para aplicações se comunicarem independente de linguagem, softwares e hardwares utilizados.
+
+    Inicialmente Serviços Web foram criados para troca de mensagens utilizando a linguagem XML(Extensible Markup Language) sobre o protocolo HTTO sendo identificado por URI (Uniforme Resouce Identifier) ou URL.
+
+    Podemos dizer que Serviços Web são API's que se comunicam por meio de redes sobre o protocolo HTTP.
+    *Todo Serviço Web é uma API, mas nem toda API é um serviço Web.
+
+  - Vantagens de se utilizar serviços web:
+    Linguagem Comum
+    Integração
+    Reutilização de Implementação, Como o retorno é sempre o mesmo, fica mais fácil de realizar manutenção.
+    Segurança - Os acessos fazem requisição apenas da parte da informação necessário.
+    Custos - 1 aplicação para todos fica muito mais barato.
+
+  - Principais Tecnologias:
+    SOAP, REST, CML, JSON.
+
+____________________________
+
+- Estrutura SOAP
+  - O que é SOAP: 
+    Simple Object Access Protocol (Protocolo Simples de Acesso ao Objeto).
+    É um protocolo baseado em XML para acessar serviços web principalmente por HTTP.
+  - Vantagens:
+    Permite integrações entre aplicações, independente de linguagem, por usar linguagem comum XML.
+    É independente de plataforma e software.
+    Meio de transporte genérico, ou seja, pode ser usado por outros protoclos além do HTTP.
+
+- O que é XML:
+  XML - Extensible Markup Language.
+  É uma linguagem de marcação criada na década de 90 pela W3C.
+  *W3C também criou o SOAP.
+  Facilita a separação de conteúdo através das tags.
+  Não possui limitação de tags.
+
+- Estrutura do SOAP:
+  O "SOAP Message" possui uma estrutura única que deve sempre ser seguida.
+  - SOAP Envelope
+    É o primeiro elemento do documento. Toda estrutura de mensagem fica dentro do SOAP Envelope.
+
+  - SOAP Header
+    É o elemento onde possui informações de atributos e metadados de requisição.
+
+  - SOAP Body
+    É o elemento que contém os detalhes(conteúdo) da mensagem
+
+    `<soap: Envelope>`
+     `<soap: Header>`
+     `</soap: Header>`
+      `</soap: body>`
+        `<nome>Teste</nome>`
+        `<sobrenome>Aula</sobrenome>`
+      `</soap: body>`
+    `</soap: Envelope>`
+
+____________________________
+
+- Entendendo o que é WSDL e XSD
+  O que é WSDL - Web Services Description Language.
+  Usado para descrever como Web Services funciona.
+  A descrição é feito em um documento XML, onde é descrito o serviço, especificações de acesso, operações e métodos.
+  - O que é XSD - XML Schema Definition
+    Usado para definir a estrutura de dados  que será validada no XML.
+    Funciona como uma documentação de como deve ser montado o SOAP Message(XML) que será enviado através de Web Services.
+
+  - WSDL público - soapclient.com/xml/soapresponder.wsdl
+    É comum ver WSDL com ? Ex: soapclient.com/xml/soapresponder?wsdl, mas depende da regra de negócio.
+
+    Download SOAP UI OPEN SOURCE
+    https://www.soapui.org/downloads/soapui/
+
+    `Arquivo de teste: https://docs.python-zeep.org/en/master/`
+
+    `from zeep import Client`
+
+    `client = Client('http://soapclient.com/xml/soapresponder.wsdl')`
+    `result = client.service.Method1(bstrParam1="oi", bstrParam2="tchau")`
+    `print(result)`
+
+____________________________
+
+- Aprenda o que são REST, API e JSON
+
+  - O que é REST?:
+    REST - Representational State Transfer
+    É uma representação do objeto naquele momento. Não importa o que ele é mas como está quando se faz a chamada.
+    Diferente do SOAP, não é um protocolo, é um estilo de arquitetura de software que define a implementação de um serviço web.
+
+    Vantagens de se utilizar REST:
+    Permitir integrações entre aplicações e também entre clientes e servidor em áginas web e aplicações.
+    Utiliza dos métodos HTTP para definir a operação que está sendo efetuada.
+    Arquitetura de Fácil compreensão.
+
+    *Quando um aplicação web disponibiliza um conjunto de rotinas e padrões através de serviços web, podemos chamar esse conjunto de API.
+
+  - O que é API?:
+
+    API - Application Programming Interface.
+
+    São conjuntos de rotinas documentados e disponibilizados por uma aplicação para outras aplicações possam consumir suas funcionalidades.
+
+    - Entendendo os métodos utilizados pelo REST:
+      Principais métodos HTTP: 
+
+      GET - Solicita a representação de um recurso.
+
+      POST - Solicita a criação de um recurso.
+
+      DELETE - Solicita a exclusão de um recurso.
+
+      PUT - Solicita a atualização de um recurso.
+
+  - Estrutura de um REST:
+    Para um serviço Web ser considerado um REST, deve seguir essa estrutura acima.
+
+  - O que é JSON?:
+
+    JSON - JavaScript Object Notation.
+
+    Formatação leve utilizada para troca de mensagens entre sistemas.
+
+    Usa de uma estrutura chave e valor e também de listas ordenadas.
+
+    - Estrutura de um JSON:
+
+      `{`
+
+      ​	`"chave1": "valor1",`
+
+      ​	`"chave2":"valor2",`
+
+      ​	`"lista":[`
+
+      ​		`{`
+
+      ​		`"atributo1": "valoratributo1",`
+
+      ​		`},`
+
+      ​		`{`
+
+      ​		`"atributo2": "valoratributo2"`
+
+      ​		`}`	
+
+      ​	`]`
+
+      `}`
+
+____________________________
+
+- 
+  Veja sobre integração com REST e métodos HTTP na prática
+  - Código de estado (Status Code) HTTP
+    Usado pelo servidor para avisar o cliente sobre o estado da operação solicitada.
+    1xx - Informativo. Ex: Caso a aplicação ainda esteja em processo e não pode ser retornado no momento.
+    2xx - Sucesso. Ex: Quando a requisição é retornada com sucesso.
+    3xx - Redirecionamento. Ex: Caso a URI mude, pode haver uma indicação de direcionamento para a nova URI.
+    4xx - Erro do Cliente. Ex: A URI não existe, ou não encontrou o endereço/arquivo.
+    5xx - Erro do Servidor. Ex: Diferente do cliente, a URI existe, mas no processamento do servidor houve erro interno. 
+
+    `Códigos de status de respostas HTTP: https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Status`
+
+  - Integração com serviços REST
+    
+
+  - Métodos HTTP na prática
+    
+
