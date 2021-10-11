@@ -1,33 +1,40 @@
-- Web Services
+# FUNDAMENTOS DE ARQUITETURA DE SISTEMAS
 
-  - O que são Web Services:
-    Serviços Web ou Web Services são soluções para aplicações se comunicarem independente de linguagem, softwares e hardwares utilizados.
 
-    Inicialmente Serviços Web foram criados para troca de mensagens utilizando a linguagem XML(Extensible Markup Language) sobre o protocolo HTTO sendo identificado por URI (Uniforme Resouce Identifier) ou URL.
 
-    Podemos dizer que Serviços Web são API's que se comunicam por meio de redes sobre o protocolo HTTP.
-    *Todo Serviço Web é uma API, mas nem toda API é um serviço Web.
+## VANTAGENS E DESENVOLVIMENTO DE WEB SERVICES
 
-  - Vantagens de se utilizar serviços web:
-    Linguagem Comum
-    Integração
-    Reutilização de Implementação, Como o retorno é sempre o mesmo, fica mais fácil de realizar manutenção.
-    Segurança - Os acessos fazem requisição apenas da parte da informação necessário.
-    Custos - 1 aplicação para todos fica muito mais barato.
+### Web Services
 
-  - Principais Tecnologias:
-    SOAP, REST, CML, JSON.
+- O que são Web Services:
+  Serviços Web ou Web Services são soluções para aplicações se comunicarem independente de linguagem, softwares e hardwares utilizados.
+
+  Inicialmente Serviços Web foram criados para troca de mensagens utilizando a linguagem XML(Extensible Markup Language) sobre o protocolo HTTO sendo identificado por URI (Uniforme Resouce Identifier) ou URL.
+
+  Podemos dizer que Serviços Web são API's que se comunicam por meio de redes sobre o protocolo HTTP.
+  *Todo Serviço Web é uma API, mas nem toda API é um serviço Web.
+
+- Vantagens de se utilizar serviços web:
+  Linguagem Comum
+  Integração
+  Reutilização de Implementação, Como o retorno é sempre o mesmo, fica mais fácil de realizar manutenção.
+  Segurança - Os acessos fazem requisição apenas da parte da informação necessário.
+  Custos - 1 aplicação para todos fica muito mais barato.
+
+- Principais Tecnologias:
+  SOAP, REST, CML, JSON.
 
 ____________________________
 
-- Estrutura SOAP
-  - O que é SOAP: 
-    Simple Object Access Protocol (Protocolo Simples de Acesso ao Objeto).
-    É um protocolo baseado em XML para acessar serviços web principalmente por HTTP.
-  - Vantagens:
-    Permite integrações entre aplicações, independente de linguagem, por usar linguagem comum XML.
-    É independente de plataforma e software.
-    Meio de transporte genérico, ou seja, pode ser usado por outros protoclos além do HTTP.
+### Estrutura SOAP
+
+- O que é SOAP: 
+  Simple Object Access Protocol (Protocolo Simples de Acesso ao Objeto).
+  É um protocolo baseado em XML para acessar serviços web principalmente por HTTP.
+- Vantagens:
+  Permite integrações entre aplicações, independente de linguagem, por usar linguagem comum XML.
+  É independente de plataforma e software.
+  Meio de transporte genérico, ou seja, pode ser usado por outros protoclos além do HTTP.
 
 - O que é XML:
   XML - Extensible Markup Language.
@@ -58,115 +65,309 @@ ____________________________
 
 ____________________________
 
-- Entendendo o que é WSDL e XSD
-  O que é WSDL - Web Services Description Language.
-  Usado para descrever como Web Services funciona.
-  A descrição é feito em um documento XML, onde é descrito o serviço, especificações de acesso, operações e métodos.
-  - O que é XSD - XML Schema Definition
-    Usado para definir a estrutura de dados  que será validada no XML.
-    Funciona como uma documentação de como deve ser montado o SOAP Message(XML) que será enviado através de Web Services.
+### Entendendo o que é WSDL e XSD
 
-  - WSDL público - soapclient.com/xml/soapresponder.wsdl
-    É comum ver WSDL com ? Ex: soapclient.com/xml/soapresponder?wsdl, mas depende da regra de negócio.
+O que é WSDL - Web Services Description Language.
+Usado para descrever como Web Services funciona.
+A descrição é feito em um documento XML, onde é descrito o serviço, especificações de acesso, operações e métodos.
 
-    Download SOAP UI OPEN SOURCE
-    https://www.soapui.org/downloads/soapui/
+- O que é XSD - XML Schema Definition
+  Usado para definir a estrutura de dados  que será validada no XML.
+  Funciona como uma documentação de como deve ser montado o SOAP Message(XML) que será enviado através de Web Services.
 
-    `Arquivo de teste: https://docs.python-zeep.org/en/master/`
+- WSDL público - soapclient.com/xml/soapresponder.wsdl
+  É comum ver WSDL com ? Ex: soapclient.com/xml/soapresponder?wsdl, mas depende da regra de negócio.
 
-    `from zeep import Client`
+  Download SOAP UI OPEN SOURCE
+  https://www.soapui.org/downloads/soapui/
 
-    `client = Client('http://soapclient.com/xml/soapresponder.wsdl')`
-    `result = client.service.Method1(bstrParam1="oi", bstrParam2="tchau")`
-    `print(result)`
+  `Arquivo de teste: https://docs.python-zeep.org/en/master/`
 
-____________________________
+  `from zeep import Client`
 
-- Aprenda o que são REST, API e JSON
-
-  - O que é REST?:
-    REST - Representational State Transfer
-    É uma representação do objeto naquele momento. Não importa o que ele é mas como está quando se faz a chamada.
-    Diferente do SOAP, não é um protocolo, é um estilo de arquitetura de software que define a implementação de um serviço web.
-
-    Vantagens de se utilizar REST:
-    Permitir integrações entre aplicações e também entre clientes e servidor em áginas web e aplicações.
-    Utiliza dos métodos HTTP para definir a operação que está sendo efetuada.
-    Arquitetura de Fácil compreensão.
-
-    *Quando um aplicação web disponibiliza um conjunto de rotinas e padrões através de serviços web, podemos chamar esse conjunto de API.
-
-  - O que é API?:
-
-    API - Application Programming Interface.
-
-    São conjuntos de rotinas documentados e disponibilizados por uma aplicação para outras aplicações possam consumir suas funcionalidades.
-
-    - Entendendo os métodos utilizados pelo REST:
-      Principais métodos HTTP: 
-
-      GET - Solicita a representação de um recurso.
-
-      POST - Solicita a criação de um recurso.
-
-      DELETE - Solicita a exclusão de um recurso.
-
-      PUT - Solicita a atualização de um recurso.
-
-  - Estrutura de um REST:
-    Para um serviço Web ser considerado um REST, deve seguir essa estrutura acima.
-
-  - O que é JSON?:
-
-    JSON - JavaScript Object Notation.
-
-    Formatação leve utilizada para troca de mensagens entre sistemas.
-
-    Usa de uma estrutura chave e valor e também de listas ordenadas.
-
-    - Estrutura de um JSON:
-
-      `{`
-
-      ​	`"chave1": "valor1",`
-
-      ​	`"chave2":"valor2",`
-
-      ​	`"lista":[`
-
-      ​		`{`
-
-      ​		`"atributo1": "valoratributo1",`
-
-      ​		`},`
-
-      ​		`{`
-
-      ​		`"atributo2": "valoratributo2"`
-
-      ​		`}`	
-
-      ​	`]`
-
-      `}`
+  `client = Client('http://soapclient.com/xml/soapresponder.wsdl')`
+  `result = client.service.Method1(bstrParam1="oi", bstrParam2="tchau")`
+  `print(result)`
 
 ____________________________
 
-- 
-  Veja sobre integração com REST e métodos HTTP na prática
-  - Código de estado (Status Code) HTTP
-    Usado pelo servidor para avisar o cliente sobre o estado da operação solicitada.
-    1xx - Informativo. Ex: Caso a aplicação ainda esteja em processo e não pode ser retornado no momento.
-    2xx - Sucesso. Ex: Quando a requisição é retornada com sucesso.
-    3xx - Redirecionamento. Ex: Caso a URI mude, pode haver uma indicação de direcionamento para a nova URI.
-    4xx - Erro do Cliente. Ex: A URI não existe, ou não encontrou o endereço/arquivo.
-    5xx - Erro do Servidor. Ex: Diferente do cliente, a URI existe, mas no processamento do servidor houve erro interno. 
+### Aprenda o que são REST, API e JSON
 
-    `Códigos de status de respostas HTTP: https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Status`
+- O que é REST?:
+  REST - Representational State Transfer
+  É uma representação do objeto naquele momento. Não importa o que ele é mas como está quando se faz a chamada.
+  Diferente do SOAP, não é um protocolo, é um estilo de arquitetura de software que define a implementação de um serviço web.
 
-  - Integração com serviços REST
-    
+  Vantagens de se utilizar REST:
+  Permitir integrações entre aplicações e também entre clientes e servidor em áginas web e aplicações.
+  Utiliza dos métodos HTTP para definir a operação que está sendo efetuada.
+  Arquitetura de Fácil compreensão.
 
-  - Métodos HTTP na prática
-    
+  *Quando um aplicação web disponibiliza um conjunto de rotinas e padrões através de serviços web, podemos chamar esse conjunto de API.
+
+- O que é API?:
+
+  API - Application Programming Interface.
+
+  São conjuntos de rotinas documentados e disponibilizados por uma aplicação para outras aplicações possam consumir suas funcionalidades.
+
+  - Entendendo os métodos utilizados pelo REST:
+    Principais métodos HTTP: 
+
+    GET - Solicita a representação de um recurso.
+
+    POST - Solicita a criação de um recurso.
+
+    DELETE - Solicita a exclusão de um recurso.
+
+    PUT - Solicita a atualização de um recurso.
+
+- Estrutura de um REST:
+  Para um serviço Web ser considerado um REST, deve seguir essa estrutura acima.
+
+- O que é JSON?:
+
+  JSON - JavaScript Object Notation.
+
+  Formatação leve utilizada para troca de mensagens entre sistemas.
+
+  Usa de uma estrutura chave e valor e também de listas ordenadas.
+
+  - Estrutura de um JSON:
+
+    `{`
+
+    ​	`"chave1": "valor1",`
+
+    ​	`"chave2":"valor2",`
+
+    ​	`"lista":[`
+
+    ​		`{`
+
+    ​		`"atributo1": "valoratributo1",`
+
+    ​		`},`
+
+    ​		`{`
+
+    ​		`"atributo2": "valoratributo2"`
+
+    ​		`}`	
+
+    ​	`]`
+
+    `}`
+
+____________________________
+
+### Veja sobre integração com REST e métodos HTTP na prática
+
+- Código de estado (Status Code) HTTP
+  Usado pelo servidor para avisar o cliente sobre o estado da operação solicitada.
+  1xx - Informativo. Ex: Caso a aplicação ainda esteja em processo e não pode ser retornado no momento.
+  2xx - Sucesso. Ex: Quando a requisição é retornada com sucesso.
+  3xx - Redirecionamento. Ex: Caso a URI mude, pode haver uma indicação de direcionamento para a nova URI.
+  4xx - Erro do Cliente. Ex: A URI não existe, ou não encontrou o endereço/arquivo.
+  5xx - Erro do Servidor. Ex: Diferente do cliente, a URI existe, mas no processamento do servidor houve erro interno. 
+
+  `Códigos de status de respostas HTTP: https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Status`
+
+- Integração com serviços REST
+  
+- Métodos HTTP na prática
+  
+
+------
+
+## CONCEITOS DE ARQUITETURA EM APLICAÇÃO PARA INTERNET
+
+### Introdução a arquitetura de sistemas
+
+Tipos de Arquiteturas:
+
+- Monolito: Projeto sem muita demanda, com uma aplicação para servir requisições. É uma arquitetura mais simples, mas, é limitado a escalabilidade, por isso depende ter várias instancias como backup.
+- Microserviços1: Diferente do monolito que só tinha uma aplicação, ele terá um serviço para cada alteração. Mas um serviço pode receber muita demanda e não ser suficinete, sendo necessário estabelecer comunicação com outros nós. Isso pode ficar caótico com muitos nós conforme a aplicação aumentar.
+- Microserviços2: Utilização de um broker para gerenciar a comunicação entre os nós. Qual mudança ou exclusão de um serviço, outros não são impactados.
+- Microserviços3: Arquitetura que passa as requisições por um gerenciador de pipeline antes de distribuir para os nós responsáveis, podendo ter cada serviço separado. Assim o gerenciador identificando que houve falha, ele direciona para outros nós assumirem o o serviço e reverterem o erro para que não haja inconsistência de serviço/serviço fora do ar. Ponto negativo, caso o gerenciador fique fora do ar, o sistema inteiro para.  
+
+### Comparando os modelos Monolito e Microserviços
+
+- Monolito:
+
+| Prós                       | Contra                                                       |
+| -------------------------- | ------------------------------------------------------------ |
+| Baixa complexidade         | Stack única (Se quiser mudar a linguagem,<br />não será possível. Tem que refazer) |
+| Monitoramento simplificado | Compartilhamento de recursos                                 |
+|                            | Acoplamento (Serviço dependente do outro)                    |
+|                            | Mais complexo a escalabilidade                               |
+
+- Microserviços1:
+
+| Prós                   | Contra                                                       |
+| ---------------------- | ------------------------------------------------------------ |
+| Stack dinâmica         | Acoplamento (Serviço dependente do outro)                    |
+| Simples escalabilidade | Monitoramento mais complexo                                  |
+|                        | Provisionamento mais complexo (várias aplicações interligadas entre várias máquinas/containers) |
+
+- Microserviços2:
+
+| Prós                   | Contra                                                       |
+| ---------------------- | ------------------------------------------------------------ |
+| Stack dinâmica         | Monitoramento mais complexo                                  |
+| Simples escalabilidade | Provisionamento mais complexo para a aplicação não saia do ar, caso o broker caia |
+| Desacoplamento         |                                                              |
+
+- Microserviços3:
+
+| Prós                   | Contra                                                |
+| ---------------------- | ----------------------------------------------------- |
+| Stack dinâmica         | Provisionamento mais complexo                         |
+| Simples escalabilidade | Plataforma inteira depende do gerenciador de pipeline |
+| Desacoplamento         |                                                       |
+| Menor complexidade     |                                                       |
+
+### Gerenciamento de erros e volume de acesso
+
+Nada adianta um arquitetura que parece ser simples de visualizar ou de se manter mas não tem um gerenciamento de erro ou de inatividade.
+
+- Onde é mais complexo?:
+  - Processos assíncronos (Microserviços2)
+  - Pipeline
+
+- Solução:
+  - Dead letter queue
+  - Filas de re-tentativas
+
+`Repositório: https://github.com/jeffhsta/fundamentos_arquitetura`
+
+------
+
+## A ARQUITETURA DE APLICAÇÕES MÓVEIS E INTERNET DAS COISAS
+
+### Conceitos de Internet das Coisas
+
+- Por que conectar coisas?:
+  - Embutir sensores em objetos do dia-a-dia;
+  - Coletar dados dos sensores;
+  - Usar o dado para tomar decisão.
+
+- Conceitos básicos de IoT: Things + Cloud + Inteligence:
+  - Smart Building - Capacidade de coletar dados para tomar decisões inteligentes em um ambiente predial.
+  - Smart Home - Coletar dados de diversos sensores e monitorá-los.
+  - Wearables - Componentes que coletam dados referente a saúde, atividades etc.
+  - Agricultura - Analisar processos produtivos para torná-los mais sustentáveis.
+  - Smart Transportations - Veículos passam a ser agentes de trânsitos.
+  - RFID - Cadeia de suprimento, onde nasceu a tecnologia de IoT, onde que, através de etiquetas, é possível saber em cada processo o produto está, desde o centro de distribuição até o usuário final.
+  - Energia Eficiente - Agregar dados de distribuidores e consumidores para gerar dados e tomar melhor decisões sobre a energia.
+  - Computação Ubígua - Terceira onde da computação, quando a tecnologia já está fora dos nossos olhos e passa a fazer parte do nosso dia a dia. 
+
+- Desafios de IoT:
+  - Privacidade e segurança - Uma vez que dispositivos instalados em casa, deve ter a segurança e manter a privacidade pessoal.
+  - Quantidade exponencial de dispositivos conectados na rede - As empresas não estão acostumadas a trabalhar com essa grande quantidade de dados e informações gerados e coletados.
+  - Ser capaz de processas e armazenar uma enorme quantidade de informações.
+  - Gerar valor a partir dos dados coletados.
+
+### Arquitetura da internet das coisas e protocolo de comunicação
+
+O Problemas a resolver: Um proprietário de uma frota de veículos, necessita saber a posição exata de cada um de seus veículos.
+
+Cada veículo precisará de um GPS para enviar o dados de posição para um servidor para se tomar a decisão.
+
+1. Como conectar as coisas? - Lâmpadas, assistentes inteligentes, wearables, veículos.
+2. O que considerar quando escolher como coletar os dados:
+   1. O dispositivo/sensor deve utilizar um baixo consumo de energia;
+   2. Muitas vezes terá uma rede de dados limitada, sem wi-fi, utilizando como por exemplo 3G ou 4G;
+   3. É necessário que o dispositivo/sensor seja resiliência de operar mesmo com a falta de rede, utilizando um sistema de buffer, armazenando os dados localmente para depois subir os dados quando conectado á uma rede;
+   4. Segurança: Quem pode acessar? Qual é o acesso? Qual são as camadas de segurança? Como proteger de hackers?;
+   5. Customização: Pensar que os dispositivos/sensores pode trabalhar em diferentes ambientes/pessoas/fornecedores;
+   6. Baixo custo já que se pensa em uma escala grande de dispositivos.
+
+- Tipos de dispositivos a serem utilizados:
+  - Sistemas embarcado Arduino: Muito utilizado para prototipagem:
+  - Sistemas embarcado MCU's: Poder de processamento maior, com mais segurança e poder de exploração, mais nível industrial, militar, transporte, etc.
+  - Computadores de baixo custo Raspberry Pi: Um computador de fato com todo poder de processamento de um computador de baixo custo com entradas e saídas úteis de se utilizar com sensores.
+
+- Como fazer o Protocolo de comunicação:
+  - 1. Smartphone do motorista ligado a cloud. Mas o motorista pode esquecer o smartphone e não funcionar a solução;
+  - 2. Embarcado: GPS Tracker dentro do veículo, trazendo a segurança que sempre estará junto com o veículo com uma aplicação desenvolvida para funcionar localmente;
+    3. Protocolo de comunicação único: MQTT é o protocolo de comunicação oficial (mais utilizado) para IoT. Ele faz a comunicação entre o dispositivo/sensor e a cloud; 
+- MQTT (Mensagem Quiu Telemessage Transport):
+  - Baseado em TCP/IP;
+  - Protocolo de mensagens assíncronas (M2M);
+  - Criado pela IBM para conectar sensores de pipelines de petróleo a satélites;
+  - Padrão OASIS suportado pelas linguagens de programação mais populares;
+  - Modelo cliente X servidor, através de protocolo HTTP. Ele é síncrono, aguarda resposta para saber o que tem que fazer.
+- Modelo Publish/Sbbscribe
+  - MQTT Broker - Roteador de mensagens;
+  - Dispositivos/sensores como Publish - Enviados dados a toda hora;
+  - Vários clients como servidores/dispositivos cadastrados recebendo esses dados;
+
+### Flexibilidade dos tópicos e Cloud
+
+Tópicos produzindo informações para o usuário. PUBLISH
+
+| mqtt      | broker.io | a6g3l9          | gps    | position         |
+| --------- | --------- | --------------- | ------ | ---------------- |
+| PROTOCOLO | BROKER    | USER IDENTIFIER | SENSOR | INFORMATION TYPE |
+
+- ``pub mqtt://broker/user/accelerometer`
+- ``pub mqtt://broker/user/gps/position`
+- ``pub mqtt://broker/user/gps/velocity`
+- `pub mqtt://broker/user/gps/position -> pub mqtt://broker/a6g3l9/pgs/position`
+
+Tópico de inscrição de informações de um ou todos canais. SUBSCRIBER
+
+- `sub mqtt://broker/user/gps/position` 
+- `sub mqtt://broker/user/gps/velocity`
+- `sub mqtt://broker/user/accelerometer`
+- `sub mqtt://broker/+/gps/position`
+- `sub mqtt://broker/user/gps/+`
+- `sub mqtt://broker/+/#`
+
+Garantias de que o protocolo de comunicação irá funcionar, por isso, o MQTT fornece o QoS com 3 níveis de garantir de entrega de mensagem.
+
+- QoS 0
+  - Nível mínimo de menor esforço;
+  - Sem garantia de entrega;
+  - Mensagem não é retransmitida.
+
+- QoS 1 - (Padrão)
+  - Garante que a mensagem foi entregue no mínimo uma vez ao recebedor;
+  - Mensagem pode ser retransmitida se não houver confirmação de entrega.
+
+- QoS 2
+  - Garante que a mensagem foi entregue no mínimo uma vez ao recebedor;
+  - Mensagem pode ser retransmitida se não houve confirmação de entrega.
+
+- Cloud
+  - Grande e cada vez maior número de devices conectados;
+  - TBs ou PBs de informações;
+  - Potencial de escala global.
+- Como a nuvem funciona?:
+  - Data Store -> Worker1 ->Broker -> Worker2 -> Cache -> Visualization
+  - Data Store -> BD responsável em armazenar cada posição geográfica recebida indentificando usuário, data e hora, permitindo reconstruir rotas inteiras. É necessário pensar em um BD que permita trabalhar com aplicação em escala ex: Mongo DB, Cassandra, PostgreeSQL, etc. Hoje em dia muito utilizado são os BD NoSQL. 
+  - Worker1 -> Código para publicar dados ao brocker
+  - Brocker -> recebendo e separando os dados para enviar aos subscribers
+  - Worker2 -> Còdigo para entregar os dados ao cache para que esteja disponível para quem se escreveu no canal utilizá-los
+  - Cache -> local onde os dados estão disponíveis para serem utilizados da melhor forma
+  - Visualization -> Apresenta em tempo real a última posição de cada usuário no mapa e a quantidade de usuários por hora.
+
+### Estudo de caso
+
+Arquitetura é uma questão de escolha. Assim que já entendeu o seu problema e os componentes necessários, você precisará escolher uma solução, ferramentas, protocolos, etc, para fazer o seu projeto acontecer.
+
+1. Prova de conceito: App Android -> Elipse Mosquitto -> Node.JS -> Banco de dados MySQL.
+2. Mínimo produto viável. Pensando em problemas, escalas, etc.: GPS Embarcado -> HiveMQ -> Akka Scala JVM -> Banco de dados NoSQL.
+3. Solução. Usufruir de produtos já prontos.: GPS Embarcado -> AWS IoT Core -> AWS Kinesis Firehose -> AWS S3.
+
+IoT na prática:
+
+GPS -> MQTT | Broker | MQTT -> Worker | TCP/IP | -> Cache | Socket io -> Visualization
+
+GPS -> AWS ioT Core -> AWS Data Stream -> AWS Lambda -> AWS ElasticCache Redis 
+
+AWS ElasticCache Redis <-> AWS EC2 -> FeatherJS Backend -> DashBoard
+
+
 
