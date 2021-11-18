@@ -1,4 +1,4 @@
-<img align="center" src="https://hermes.digitalinnovation.one/assets/logos/dio-white.png" alt="Logo Semantix Inc." style="zoom:50%;" /><img align="center" src="https://hermes.digitalinnovation.one/tracks/9297b049-e054-408c-9a57-fbc3c3313505.png" alt="Logo Semantix Inc." style="zoom:7%;" />
+<img align="center" src="https://hermes.digitalinnovation.one/assets/logos/dio-white.png" alt="Logo Semantix Inc." style="width: 20%" /><img align="center" src="https://hermes.digitalinnovation.one/tracks/9297b049-e054-408c-9a57-fbc3c3313505.png" alt="Logo Semantix Inc." style="width: 8%" />
 
 # Bootcamp DIO | Cloud Data Engineer Cognizant
 
