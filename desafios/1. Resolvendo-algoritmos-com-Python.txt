@@ -1,0 +1,94 @@
+ Princípios Básicos
+A seguinte sequência de números 0 1 1 2 3 5 8 13 21... é conhecida como série de Fibonacci. Nessa sequência, cada número, depois dos 2 primeiros, é igual à soma dos 2 anteriores. Escreva um algoritmo que leia um inteiro N (N < 46) e mostre os N primeiros números dessa série.
+
+Entrada
+O arquivo de entrada contém um valor inteiro N (0 < N < 46).
+
+Saída
+Os valores devem ser mostrados na mesma linha, separados por um espaço em branco. Não deve haver espaço após o último valor.
+ 
+Exemplo de Entrada
+5
+Exemplo de Saída
+0 1 1 2 3
+
+RESPOSTA:
+
+n = int(input())
+fibonacci1 = 0
+fibonacci2 = 1
+fib_list = [0]
+n = n - 1
+for i in range(fibonacci1,n):
+  soma = fibonacci1 + fibonacci2
+  fibonacci1 = fibonacci2
+  fibonacci2 = soma
+  fib_list.append(fibonacci1)
+
+fib_string = ' '.join(str(x) for x in fib_list)
+print(fib_string)
+_________________________________________________
+Desafios
+Crie um programa que leia um número e mostre os números pares até esse número, inclusive ele mesmo.
+
+Entrada
+Você receberá 1 valor inteiro N, onde N > 0.
+
+Saída
+Exiba todos os números pares até o valor de entrada, sendo um em cada linha. 
+
+ 
+Exemplo de Entrada	
+6
+Exemplo de Saída	
+2
+4
+6
+
+RESPOSTA:
+numero = int(input())
+
+for i in range(2, numero + 2, 2):
+  if(i % 2 == 0) and (i <= numero):  
+    print(i)
+_______________________________________
+
+Ramsay: "(...) você vence se conseguir adivinhar quem eu sou e por que estou torturando você."
+
+Theon deve pensar rápido e adivinhar quem é seu algoz! Entretanto, Ramsay já decidiu o que ele irá fazer depois que Theon der sua resposta.
+
+Theon pode dizer que seu algoz é alguma dentre N pessoas. Considere que as pessoas são numeradas de 1 a N. Se Theon responder que seu algoz é a pessoa i, Ramsay irá atingi-lo Ti vezes.
+
+Sua tarefa é ajudar Theon a determinar qual deve ser sua resposta de forma a minimizar o número de vezes que ele será atingido.
+
+Entrada
+A primeira linha contém um inteiro N (1 ≤ N ≤ 100). A segunda linha contém N inteiros T1, T2, ..., TN (0 ≤ Ti ≤ 20).
+
+Saída
+Imprima uma linha contendo o número da pessoa que Theon deve dizer ser seu algoz. Se existe mais de uma resposta possível, imprima a menor.
+
+ 
+Exemplos de Entrada	
+3
+8 0 7
+Exemplos de Saída
+2
+
+RESPOSTA:
+import sys
+
+import sys
+
+N = int(input())
+pessoas = sys.stdin.readline().split()
+lowest_pos = 0
+
+for i in range(N):
+  if i == 0:
+    lowest = pessoas[i]
+    continue
+  if  pessoas[i] < lowest:
+    lowest = pessoas[i]
+    lowest_pos = i
+    
+print(lowest_pos + 1)
