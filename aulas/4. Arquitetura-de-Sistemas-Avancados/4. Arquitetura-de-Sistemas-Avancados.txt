@@ -1,0 +1,178 @@
+# ARQUITETURA DE SISTEMAS AVANÇADOS
+
+------
+
+## Conceitos de integração de sistemas e mensageria
+
+### Aprenda o que é e como funciona arquitetura em mensageria
+
+| Prós                                                         | Contras                                                      |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Desacoplamento                                               | Single point of failure - se o brocker cair, perde o buffer com as informações que forame enviadas. |
+| Fácil plug & play                                            | Difícil monitoramento - Por ser assíncronas é difícil rastrear o fluxo das mensagens |
+| Comunicação assíncrona                                       |                                                              |
+| Simples escalabilidade                                       |                                                              |
+| Broadcasting                                                 |                                                              |
+| Permite Event Source(Lista/fila de eventos/operações com estado) |                                                              |
+
+Comunicação assíncrona entre serviços.
+
+Passo1: Web app -> Proxy HTTP -> Serviço1 -> Message Broker
+
+Passo2: Message Broker -> Serviço2 -> Message Broker
+
+Passo3: Message Broker -> Serviço3
+
+### Gerenciando erros em uma  arquitetura assíncrona
+
+- Dead letter queue - Devido a dificuldade em rastrear as mensagens (quem produziu, o que foi realizado a partir daquela mensagem, etc), é possível realizar uma Fila de re-tentativas.
+- Monitoramento entre serviços - Se não conseguir rastrear o fluxo das mensagens para saber o que está dando falha ou falta de inconsistencia é necessário fazer um Rastreamento de fluxo.
+- Inserir um TrackerID(metadado) juntamente com cada mensagem gerada por cada serviço, a fim de poder ter um rastreamento por cada faze de transformação dos logs gerados.
+
+------
+
+## Arquitetura de dados não estruturados e business intelligence
+
+### Business Intelligence em Modelos de Dados
+
+BI é composto por diversas área de diretoria/gestores composta para ajudar na tomada de decisão:
+
+- Ferramentas necessárias;
+- Infraestrutura Servidores, rede, etc para suportar as ferramentas;
+- Profissionais (corpo técnico) - Pessoas com visão analítica para realizar todas as fases de BI;
+- **Dados** - Vindos normalmente de SGDB ou sistemas de operação. Podendo ser complementados por informações externas (pesquisa de campo, qualquer informações que impactará nas decisões) ou internas (outros sistemas da instituição).
+- BI Solution - Infraestrutura -> Gerenciamento dos dados -> Analytics -> Compartilhamento -> Ferramentas gerias
+- Ferramentas de BI -> QlikView, QlikView Sense, SAP, SAS, Tableau, Power BI, etc.
+
+### Aprenda sobre os conceitos de Data Warehouse
+
+Quando se fala em modelagem de dados para apoio de BI. É uma estratégia de estilo de modelagem de dados, para que os dados sejam suficientes e satisfatório de apoio.
+
+| OLTP (On-line Transaction Processing)                        | OLAP (On-line Analytics Processing)                          |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Transações de ponto a ponto que acontece no sistema.         | Voltado para análise e consolidação dos dados para conhecimento e decisões estratégicas. |
+| Atende um público maior de usuários.                         | Atende uma gama mais reduzida de usuários.                   |
+| Focado no operacional                                        | Focado na estratégia                                         |
+| Os dados são voláteis, passiveis de exclusão / insersão o tempo todo. | Os dados não são voláteis, ou não devem ser alterados, somente em casos muito específicos de erro. |
+| Buscas mais simples/genéricas                                | Relatório consolidado utilizando buscas consolidads (AVG, SUM, COUNT, GROUP BY, etc) |
+
+`Fonte: https://canaltech.com.br/business-intelligence/o-que-significa-oltp-e-olap-na-pratica/`
+
+### O que é Big Data e dados não estruturados (NoSQL)
+
+Big Data - É um termo que descreve um grande volume de dados - tanto estruturados quanto não estruturados. Com formatos diversos de informações que precisa tirar informações a partir destes.
+
+### Data Lake vs Big Data
+
+Data Lake - É um BigData mais reservado, para ser utilizado internamente. Mas precisa de um sistema de manutenção dos dados, para gerenciar o tempo de permanência dos dados.
+
+Obs.: Recomendado instalar sistemas SGDB em plataformas linux, por segurnaça. 
+
+1. Prática: Instalar o MongoDB para testar de forma prática do terminal.
+
+   Obs.: Após instalar, ir em variáveis de ambiente, adicionar uma nova variável e incluir o caminho da pasta bin do mongoDB. 
+
+2. No mongoDB executar os comandos abaixo:
+
+> `show databases //Mostra todos os banco de dados existentes`
+> `use loja //Cria um DB loja caso não exista e entra nele.`
+> `db.produtos.insert({codigo:01,descricao:"caneta"}) //Insere um registro no tópico produto`
+> `db.produtos.find() //Visualiza todos os produtos`
+> `db.produtos.insert({codigo:02,descricao:"lapis",cor:"vermelha"}) //Insere um registro com novos campos`
+> `db.produtos.find()`
+> `db.produtos.insert({codigo:03,cor:"azul"})`
+> `db.produtos.find()`
+
+## Fundamentos de arquitetura de aplicação em nuvem
+
+### Arquitetura em nuvem e sua evolução
+
+- Cloud Computing 
+  - É um ambiente de gerenciamento de hardware/software;
+  - Disponível por empresas de provedores de serviços e armazenamento;
+  - Pague apenas o que consumir;
+  - Iaas / Pass / Bass - Tipos de serviços disponíveis.
+
+- Iaas - Infraestrutura como Serviço
+  - Hoje se quiser ter um sistema disponível, eu posso contratar máquinas com determinadas configurações para instalar meus serviços.
+
+- Pass - Plataforma como serviço
+  - Não só as máquinas disponíveis, mas consigo automatizar uma escalabilidade. Terraform ou com CloudFormation, posso escrever uma estrutura de comandos para que esses provedores cria as máquinas com as configurações que você mesmo pode configurar. 
+
+- Bass - Backend como serviço ou Mobile Backend como serviço
+  - Ex: Firebase. Substitui toda complexidade de autenticação em aplicações mobiles.
+
+### Entenda sobre disponibilidade de aplicações
+
+- IaaS - Garantia de não se preocupar com hardware e internet
+- PaaS - Garantia de disponibilidade maior e auto scala imediata
+- BaaS - Garantia de não se preocupar com um serviço de backend, podendo lançar um produto mais rápido.
+
+Kubernets (K8S)
+
+- Tem multiplos nodes (nós). Mínimo de 3 replicações em cada nós.
+-  Load balancer  - Gerenciar de conexão de entrada, distribuindo as requisições entre as instancias, não sobrecarregando o sistema.
+
+### Aprenda a executar serviços com Serveless
+
+Em uma arquitetura Serveless: 
+
+- Sem servidor, sem necessidade de cuidar do servidor que está sendo alugado.
+- Sem serviço executando 24h, que só dispara um evento se houve alguma requisição.
+- Sem down time - O serviço está sempre disponível, sem ficar fora do ar.
+- Tipos de serviços: API Gateway, Amazon Kinesis, AWS Lambda, Amazon S3.
+
+------
+
+## Desenvolvimento e operação de software integrado
+
+### O que é DevOps?
+
+Antigamente as área de IT Operations, Development e Quality Assurance(QA) não assumiam os erros de outras áreas. O DevOps é um conjunto de práticas que veio para integrar e automatizar os processo das áreas e inserir uma cultura de integração e fazer entregas mais rápidas para clientes com mais confiança.
+
+DevOps - Baseia-se em criar uma cultura de colaboração entre as equipes que trabalham separadas. É uma mudança de mentalidade , uma cultura, um moimento, uma filosofia.
+
+- Framework - CALMS
+  - Cultura - Todas as ferramentas e automação sã in[úteis de não foram acompanhadas pela verdadeira disposição da área de desenvolvimento e operação  de trabalharem juntos.
+  - Automatização - Elimina o trabalho manual repetitivo, automatizando elimina processos repetitivos e cria sistemas confiáveis. Gerando velocidade na entrega e formando os envolvidos mais produtivos para realizarem outras tarefas.
+  - Lean - Entregas de valor ao cliente, com objetivos enxutos. Conhecendo as limitações e gargalos do processo. Buscando melhoria contínua em tudo.
+  - Menduração - Cíclo infinito. Mensurar e obter métricas é o ponto de partida para novas melhorias. Levantando previsibilidade sobre possíveis incidentes e criando insumos suficientes para analisar falhas e gerar melhorias constantemente.
+  - Compartilhamento - Além de ser sadável, auxilia na descentralização de conhecimento em pessoas dos times, evitando que os processos sejam dependentes. Assim é possível criar um time auto sustentável, com todos tendo um conhecimento básico de todas as áreas.
+- Os 3 caminhos:
+  1. Fluxo: A otimização do fluxo visa eliminar desperdícios, gargalos no processo, transferência de responsabilidades e tempos de espera. A chave é aplicar metodologias ágeis e a automatização dos processos.
+  2. Feedback: Ciclos rápidos para resolver um problema muito antes se não tivesse um feedback. Alertar sobre qualquer falha e levantando todas as métricas, ajudando a gerar informações relevantes, sendo possível falhar rápido para agir rápido. 
+  3. Aprendizado: Aprendizado contínuo que visa gerar conhecimento através da experimentação. Hipóteses são melhores que certezas imediatas, faz parte de um processo de segurança psicológica. Elimine a cultura da culpa e aumente a colaboração e o compartilhamento de conhecimento.
+- Ferramentas para o ciclo de entrega de software:
+- Plan (Planejamento): Microsoft Teams, Draw.io, Balsamiq, roadmunk, Confluence, Jira, etc;
+- Code (Desenvolvimento): Visual Studio, Github, Sublime, cmder, Git, VSCode, etc;
+- Build (Construção): Container, Docker, Nuget, NPM, cri-o, .NET CLI, MDBuild, etc;
+- Test (Teste): Unit.net, loader.iom Apache JMeter, Selenium, Runscope, Postman, SonarQube, Code Climate, Codacy, etc;
+- Release (Protótipo): Disponibilizar para levantar feedback;
+- Deploy: Azure Pipelines, circleci, AppVeyor, GitLab CI, Travis CI, Jenkins, etc; (IMPORTANTE AUTOMATIZAR ESSE PONTO)
+- Operate (Operação): Kubernetes, Rancher, Puppet, Terraform, CHEF, Open Shift, AWS, Microsoft Azure, , Google Cloud Plataform, etc;
+- Monitor: Datalog, Prometheus, AppMetrics, Rollbar, Zabbix, New Relic, Pushover, Seq, Monitis, etc;
+
+*Indicação de livro: Manual de DevOps. Gene Kim, John Willis, Jez Humble, Patrick Debois, John Allspow, 2016.*
+
+### Continuous Integration/Delivery/Deployment
+
+- Integration: Construção, Teste unitário, análise da qualidade de código, empacotamento para release. Não faz  a implantação, só era o protótipo. 
+- Deployment: É feito de modo automático, colocando a implantação no ambiente de teste para fazer os testes de stress/carga.
+- Delivery: Depende de observação de um aprovador para liberar para ambiente de produção. 
+
+### Continuous Inspection
+
+Principais ferramentas: SonarQube, CODE Climate e o CODACY.
+
+Essas ferramentas servem para resolver problemas de complexidade ciclomática. Exemplos:
+
+- Complexidade Climática: Bloqueia processos caso identifique complexidade de código (Ex: fluxos de repetição IFs, While) ou códigos duplicados, mesmo se tiver apenas variáveis diferentes.
+- Vulnerabilidade /Code Smell: Evita códigos que tem senhas amarradas ao código, a fim de evitar senhas que podem ser vazadas.
+- Códigos comentados e Padronização de estilo;
+- Códigos que são explícitos ele pode pedir para retirar a indicação de True ou False. Obs.: Boa prática é utilizar que seja explicitado mesmo.
+-  Identifica ponto e vírgula desnecessários.
+- Além de automatizar, ele consegue retornar uma métrica de débito técnico, mostrando a quantidade de dias necessários para revolver os problemas.
+- Validação de Pull-Request, odne que os merges são feitos pelas ferramentas de Git, caso o código passe por todos os testes que forem integrados.
+
+`Mais informações em: https://github.com/ThiagoBarradas/jsonmasking`
+
