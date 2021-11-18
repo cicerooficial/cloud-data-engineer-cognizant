@@ -1,0 +1,1042 @@
+# Conceitos e melhores práticas com bancos de dados PostgreSQL
+
+------
+
+## Introdução ao bando de dados PostgreeSQL
+
+Documentação oficial: https://www.postgresql.org/
+
+### O que são dados?
+
+Valores brutos, fatos, brutos, observações documentadas,registros soltos, que são recolhidos e armazenados sem sofrer qualquer tratamento.
+
+### O que são informações?
+
+Estruturação de dados, organização de dados.
+Conjunto de dados relacionados entre si que geram valor, que criam sentidos aos dados. Material de conhecimento.
+
+### Modelos relacionais
+
+Classifica e organiza as informações em tabelas com linhas e colunas .
+As linhas, ou tuplas, são os dados organizados são os valores das tabelas, e as colunas são os atributos destes dados.
+
+**Tabelas**
+**Coisas tangíveis:**
+	Elementos físicos (carro, produto, animal)
+**Funções:**
+	Perfis de usuário, status de compra
+**Eventos ou concorrências:**
+	Produto de um pedido, histórico de dados
+
+**Colunas importantes:**
+**Chave Primária**
+Conjunto de um ou mais campos que nunca se repetem. Identidade da tabela. São utilizados como índice de referência na criação de relacionamentos entre tabelas
+**Chave Estrangeira**
+Valor de referência a uma PK de outra tabela da mesma tabela para criar um relacionamento.
+
+SGBD: Sistemas de gestão de base de dados. Conjunto de programas ou softwares responsáveis pelo gerenciamento de um banco de dados.
+Programas que facilitam a administração de um banco de dados.
+
+### **O que é o PostgreSQL?**
+
+Sistema de gerenciamento de banco de dados objeto relacional, Open Source.
+Teve início no Departamento de Ciência da computação na Universidade da Califórnia.
+
+Arquitetura Multiprocessos
+Processos são executados iniciados para cada etapa de uso.
+
+### **Características:**
+
+OpenSource
+Point in time recovery - Possível retorno dos dados em determinado ponto se for necessário.
+Linguagem proocedural com suporte a várias linguagens de programação (perl, python, etc)
+Views, funcitons, procedures, triggers
+Consultas complexas e Common table expressions (CTE)
+Suporte a dados geográficos(PostGIS)
+Controle de concorrência multi-versão
+
+------
+
+## Instalação do PostgreSQL
+
+Linux:
+
+**Instalação do postgreSQL**
+
+- Como root, criar o arquivo: /etc/apt/sources.list.d/pgdg.list
+- Adicionar o conteúdo: deb http://apt.postgresql.org/pub/repos/apt/bionic-pgdg main
+- Importar a chave do repositório oficial: wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+- Atualizar os repositórios: sudo apt-get update
+- Instalar o pgadmin4: apt install postgresql-11
+
+**Instalação da ferramenta gráfica**
+
+- Como root, criar o arquivo: /etc/apt/sources.list.d/pgdg.list
+- Adicionar o conteúdo: deb http://apt.postgresql.org/pub/repos/apt/bionic-pgdg main
+- Importar a chave do repositório oficial: wget -quiet -O -https://www.postgresql.org.media/keys/ACCC4CF8.asc | sudo apt-key add -
+- Atualizar os repositórios: sudo apt-get update
+  Instalar o pgadmin4: apt install pgadmin4
+
+------
+
+## Objetivos e tipos de dados do PostgreSQL
+
+### O que é o arquivo postgresql.conf
+
+Arquivo que contém todas as configurações de como o servidor irá se comportar no S.O.. Está localizado dentro do diretório de dados (PGData) no arquivo pg_settings
+
+A view **pg_settings** mostra todas as configurações existentes e em execução no momento do banco de dados.
+
+Dentro do pg_settings, executar os comandos:
+SELECT name, settings
+FROM pg_settings;
+
+ou SHOW [parâmetro];
+
+No ubuntu é localizado em /etc/postgresql/[versão]/[nome do cluster]/postgresql.conf
+
+#### Configurações de conexão:
+
+- LISTEN_ADDRESSES
+  Endereços TCP/IP das interfaces que o servidor PostgreSQL vai escutar/liberar conexões. Em servidores de produção cuidado em usar o * para liberar todas as portas.
+- PORT
+  A porta TCP que o servidor ficará ouvindo. Pad~rao é 5432
+- MAX_CONNECTIONS
+  Número máximo de conexões simultâneas no servidor.
+- SUPERUSER_RESERVED_CONNECTIONS
+  Número de conexões (slots) reservadas para conexões de dados de super usuário.
+
+#### **Configurações de autenticação:**
+
+- AUTHENTICATION_TIMEOUT
+  Tempo máximo em segundos para o cliente conseguir uma conexão com o servidor.
+- PASSWORD_ENCRYPTION
+  Algoritmo de criptografia das senhas dos novos usuários criados no banco de dados.
+- SSL
+  Habilita a conexão criptografada por SSL. (Somente se o banco de dados foi compilado com suporte SSL).
+
+#### Configurações de memória:
+
+- SHARED_BUFFERS
+  Tamanho da memória compartilhada do servidor PostgreSQL para cache/buffer de tabelas, índices e demais relações.
+- WORK_MEM
+  Tamanho da memória pra operações de agrupamento e ordenação (ORDER_BY, DISTINCT, MERGE JOINS)
+- MAINTENANCE_WORK_MEM
+  Tamanho da memória para operações como VACUUM, INDEX, ALTER TABLE
+
+Arquivo **pg_hba**.conf
+Responsável pelo controle de autenticação dos uisuários no servidor PostgreSQL.
+O formato pode ser: local, host, hostssl, hostnossl, host, hostssl, hostnossql.
+
+#### Métodos de autenticação:
+
+[Incluir métodos]
+
+Arquivo **pg_ident**.conf
+Responsável por mapear os usuários do sistema operacional com os usuários do banco de dados.
+Localizado no diretório de dados PGDATA de sua instalação.
+A opção ident deve ser utilizada no arquivo pg_hba.conf.
+
+#### Comandos administrativos UBUNTU:
+
+- pg_Iscluster
+  Lista todos os cluesters PostgreSQL
+- pg_creatcluster <version> <cluster name>
+  Cria um novo cluster PostgreSQL
+- pg_dropcluster <version><cluster>
+  Apaga um cluster PostgreSQL
+- pg_ctlcluster <verasion><cluster><action>
+  Start, Stop, Status, Restart de clusters PostgreSQL
+
+Comandos administrativos Windows: Em services, ir no serviço postgreSQL e clicar em Properties.
+
+#### Binários POstgreSQL
+
+[Incluir comandos binários]
+
+#### Definições:
+
+- Cluster
+  Coleção de bancos de dados que compartilham as mesmas configurações (arquivos de configuração) do PostgreSQL e do sistema operacional (porta, listen_addresses, etc).
+- Banco de dados
+  Conjunto de schemas com seus objetos/relações (tabelas, funções, views, etc)
+- Schemas
+  Conjunto de objetovs/relações (tabelas, funçoes, views, etc).
+
+### Conheça a ferramentaPGAdmin
+
+- Site oficial:
+  https://www.pgadmin.org/
+- Download com instruções passo a passo:
+  https://www.pgadmin.org/download
+- Documentação completa:
+  https://www.pgadmin.org/docs/pgadmin4/latest/index.html
+
+#### Como configurar o comando psql no Windows 10
+
+- Na barra de pesquisa do menu Iniciar, digite "variáveis" e clique na opção "Editar as variáveis de ambiente do sistema";
+- Certifique-se de que uma janela com o nome "Propriedades do Sistema" esteja aberta, e a seção "Avançado", selecionada;
+- Clique na opção "Variáveis de ambiente";
+- Na sessão "Variáveis do sistema", role para baixo até encontrar a opção com título "Path". Ao encontrá-la, dê um duplo clique em "Path";
+- Uma nova janela irá aparecer com uma lista de caminhos. Clique no botão "Novo", e aparecerá um campo para adicionar mais um caminho nessa lista;
+- Agora, basta adicionar o caminho que leva à pasta da versão do PostgreSQL instalada. No meu caso, esse caminho é **C:\Program  Files\PostgreSQL\14\bin** (pois selecionei os locais de instalação padrão). Se você também selecionou os locais padrão ao realizar a instalação, provavelmente o caminho que leva à pasta bin é o mesmo que eu escrevi acima.
+- Por fim, basta clicar em "OK" e, ao voltar para a janela anterior, clicar em "Aplicar"
+  **Para testar se esse tutorial deu certo, abra o prompt de comando do Windows e digite "psql" (sem aspas).**
+
+#### Importante para conexão (ou problemas de conexão):
+
+1. Liberar acesso ao cluster em postgresql.conf
+2. Liberar acesso ao cluster para o usuário do banco de dados em pg_hba.conf
+3. Criar/editar usuários 
+
+### Como administrar usuários no banco de dados
+
+Roles(papéis ou funções), Users(usuários) e Groups são "contas", perfis de atuação em um banco de dados, que possuem permissões em comum ou específicas. 
+Nas versões anteriores do PostgreSQL 8.1, usuários e roles tinham comportamentos diferentes. Atualmente, roles e users são alias.
+É possível que roles pertençam a outra roles.
+
+Criar BD AULA
+
+#### Administrando users/roles/groups
+
+[Incluir comandos]
+
+INHERIT - Sempre que ela pertencer a outra rola, ele herdará as permissões da role pai. 
+NOINHERIT - Ela poderá pertencer ao grupo de adm, mas não herda as permissões.
+
+Selecione o BD AULA > Tools > Query Tools:
+
+//Criando role professores
+
+CREATE ROLE professores NOCREATEDB NOCREATEROLE INHERIT NOLOGIN NOBYPASSRLS CONNECTION LIMIT 10;
+ALTER ROLE professores PASSWORD '123456';
+
+No terminal, acesse o postgresql pelo comando: **$psql -U postgres** = psql -U <usuario> <BD>
+
+Acesso o DB através do comando: **$\du**
+
+//Mostrar todos os roles disponíveis: $ SELECT * FROM pg_roles;
+
+Sair do PostgreSQL: **\q**
+
+Acessar pelo usuário professor no banco da dados auladb:  **$psql -U professor auladb**
+
+//Criando role daniel
+
+CREATE ROLE daniel LOGIN PASSWORD '123456';
+DROP ROLE daniel;
+
+//Inserindo daniel dentro do "grupo"(role) professores 
+
+CREATE ROLE daniel LOGIN PASSWORD '123' IN ROLE professores; 
+DROP ROLE daniel;
+CREATE ROLE daniel LOGIN PASSWORD '123' ROLE professores; 
+
+#### GRANT
+
+São privilégios de acesso aos objetos do banco de dados.
+
+[Incluir comandos]
+
+#### REVOKE
+
+Retira as permissões da role.
+
+[Incluir comandos]
+
+DROP ROLE daniel;
+
+//Criando tabela teste
+CREATE TABLE teste (nome varchar);
+
+$psql -U daniel 
+$psql -U daniel auladb
+
+//Permitindo acesso da tabela teste ao "grupo"(role) professores 
+
+GRANT ALL ON TABLE teste TO professores;
+
+CREATE ROLE daniel LOGIN PASSWORD '123456';
+
+$SELECT nome FROM teste;
+
+//Importante permissões do grupo(role) professores para daniel
+
+DROP ROLE daniel;
+CREATE ROLE daniel INHERIT LOGIN PASSWORD '123' IN ROLE professores; 
+
+$psql -U daniel auladb 
+
+//Retornar com as permissões anteriores, tirando as permissões de professores de daniel e conferir no terminal.
+
+REVOKE professores FROM daniel;
+
+### Objetos e comandos do banco de dados
+
+Databases não partilham objetos dentro de cada banco. Somente usuários (roles) e configurações globais do cluster
+
+No PGAdmin > BD Database > Tools > Query Tools:
+CREATE DATABASE financas;
+
+No BD financas:
+CREATE TABLE
+
+financas > schemas > Tools > Query Tools:
+
+CREATE TABLE IF NOT EXISTS banco(
+	numero INTEGER NOT NULL,
+	nome VARCHAR(50) NOT NULL,
+	ativo BOOLEAN NOT NULL DEFAULT TRUE,
+	data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (numero)
+);
+
+CREATE TABLE IF NOT EXISTS agencia (
+	banco_numero INTEGER NOT NULL,
+	numero INTEGER NOT NULL,
+	nome VARCHAR(80) NOT NULL,
+	ativo BOOLEAN NOT NULL DEFAULT TRUE,
+	data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (banco_numero, numero),
+	FOREIGN KEY (banco_numero) REFERENCES banco (numero)
+);
+
+CREATE TABLE IF NOT EXISTS cliente(
+	numero BIGSERIAL PRIMARY KEY,
+	nome VARCHAR(120) NOT NULL,
+	email VARCHAR(250) NOT NULL,
+	ativo BOOLEAN NOT NULL DEFAULT TRUE,
+	data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE  IF NOT EXISTS conta_corrente(
+	banco_numero INTEGER NOT NULL,
+	agencia_numero INTEGER NOT NULL,
+	numero BIGINT NOT NULL,
+	digito SMALLINT NOT NULL,
+	cliente_numero BIGINT NOT NULL,
+	ativo BOOLEAN NOT NULL DEFAULT TRUE,
+	data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (banco_numero, agencia_numero, numero, digito, cliente_numero),
+	FOREIGN KEY (banco_numero, agencia_numero) REFERENCES agencia (banco_numero, numero),
+	FOREIGN KEY (cliente_numero) REFERENCES cliente (numero)
+);
+
+CREATE TABLE IF NOT EXISTS tipo_transacao(
+	id SMALLSERIAL PRIMARY KEY,
+	nome VARCHAR(50) NOT NULL,
+	ativo BOOLEAN NOT NULL DEFAULT TRUE,
+	data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS cliente_transacoes(
+	id BIGSERIAL PRIMARY KEY,
+	nome VARCHAR(50) NOT NULL,
+	ativo BOOLEAN NOT NULL DEFAULT TRUE,
+	data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS cliente_transacoes(
+	id BIGSERIAL PRIMARY KEY,
+	banco_numero INTEGER NOT NULL,
+	agencia_numero INTEGER NOT NULL,
+	conta_corrente_numero BIGINT NOT NULL,
+	conta_corrente_digito SMALLINT NOT NULL,
+	cliente_numero BIGINT NOT NULL,
+	tipo_transacao_id SMALLINT NOT NULL,
+	valor NUMERIC(15,2) NOT NULL,
+	data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY (banco_numero, agencia_numero, conta_corrente_numero, conta_corrente_digito, cliente_numero) REFERENCES	conta_corrente (banco_numero, agencia_numero, numero, digito, cliente_numero)
+);
+
+Link para inserir dados: https://github.com/drobcosta/digital_innovation_one
+
+------
+
+## Fundamentos da Strutured Query Language(SQL)
+
+#### Conheça o DML e o Truncate
+
+IDEMPOTÊNCIA: Propriedade que algumas ações/operações possuem de serem executadas diversas vezes sem alterar o resultado após a aplicação final.
+
+Exemplo: IF NOT EXISTS e comandos pertinentes a DML e DDL.
+
+Melhores práticas com DDL.
+[Incluir texto de revisão]
+
+ON CONFLIT - Trabalha com base de uma regra, que se encontrar alguma conflito ele não executa a operação. Pode ser usado juntamente com o INSERT.
+
+TRUNCATE (Esvazia a tabela)
+
+TRUNCATE [TABLE] [ONLY] name [*] [, ...] [RESTART IDENTITY] | [CONTINUE IDENTITY] | [CASCATE | RESTRICT]
+
+CREATE TABLE IF NOT EXISTS teste (
+	id SERIAL PRIMARY KEY,
+	nome VARCHAR(50) NOT NULL,
+	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+DROP TABLE IF EXISTS teste;
+
+CREATE TABLE IF NOT EXISTS teste (
+	cpf VARCHAR(11) NOT NULL,
+	nome VARCHAR(50) NOT NULL,
+	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (cpf)
+);
+
+INSERT INTO teste (cpf, nome, created_at)
+VALUES ('223444566712','José Colméia','2019-07-01 12:00:00');
+
+INSERT INTO teste (cpf, nome, created_at)
+VALUES ('223444566712','José Colméia','2019-07-01 12:00:00') ON CONFLICT (cpf) DO NOTHING;
+
+UPDATE teste SET nome = 'Pedro Alvares' WHERE cpf = '223444566712';
+
+//Abrir outra aba de Query Tool
+
+SELECT numero, nome, ativo FROM banco;
+SELECT banco_numero, numero, ativo FROM agencia;
+SELECT numero, nome, email FROM cliente;
+SELECT id, nome FROM tipo_transacao;
+SELECT banco_numero, agencia_numero, cliente_numero FROM conta_corrente;
+SELECT banco_numero, agencia_numero, cliente_numero FROM cliente_transacoes;
+
+#### Funções agregadas em PotgreSQL
+
+Documentação (Aggregate Functions): https://www.postgresql.org/docs/14/functions-aggregate.html
+
+information_schema = select * from information_schema."columns" WHERE table_name = 'banco'; Função para ter acesso a todas as colunas do Banco da Dados.
+
+AVG, COUNT, MIN, MAX, SUM
+
+SELECT * FROM cliente_transacoes;
+
+SELECT AVG(valor)
+FROM cliente_transacoes;
+
+SELECT COUNT(numero)
+FROM cliente;
+
+SELECT COUNT(numero), email
+FROM cliente
+WHERE email ILIKE '%gmail.com'
+GROUP BY email;
+
+SELECT  MAX(numero)
+FROM cliente;
+SELECT  MAX(valor)
+FROM cliente_transacoes;
+SELECT  MAX(valor), tipo_transacao_id
+FROM cliente_transacoes
+GROUP BY tipo_transacao_id;
+
+SELECT  MIN(valor), tipo_transacao_id
+FROM cliente_transacoes
+GROUP BY tipo_transacao_id;
+
+SELECT COUNT(id), tipo_transacao_id
+FROM cliente_transacoes
+GROUP BY tipo_transacao_id
+HAVING COUNT(id) >150;
+
+SELECT SUM(valor)
+from cliente_transacoes;
+
+SELECT SUM(valor), tipo_transacao_id
+FROM cliente_transacoes
+GROUP BY tipo_transacao_id
+ORDER BY tipo_transacao_id ASC;
+
+SELECT SUM(valor), tipo_transacao_id
+FROM cliente_transacoes
+GROUP BY tipo_transacao_id
+ORDER BY tipo_transacao_id DESC;
+
+#### Trabalhando com JOINS
+
+JOIN (INNER JOIN), LEFT JOIN, RIGHT JOIN, FULL JOIN, CROSS JOIN
+
+JOIN (INNER JOIN): Irá trazer as informações que tem relação entre as duas tabelas.
+
+LEFT JOIN(OUTER): Irá trazer todas as informações da tabela à esquerda e somente os relacionamentos da direita.
+
+RIGHT JOIN(OUTER): Irá trazer todas as informações da tabela à direita e somente os relacionamentos da esquerda.
+
+FULL JOIN(FULL OUTER JOIN): Irá trazer todas as informações de todas as possibilidades de relacionamento possível.
+
+CROSS JOIN: Todos os campos das duas tabelas irá se relacionar criando uma matrix.
+
+SELECT numero, nome FROM banco;
+
+SELECT banco_numero, numero,nome FROM agencia;
+
+SELECT banco_numero, agencia_numero, numero, digito, cliente_numero FROM conta_corrente;
+
+SELECT id, nome FROM tipo_transacao;
+
+SELECT banco_numero, agencia_numero, conta_corrente_numero, conta_corrente_digito, cliente_numero, valor
+FROM cliente_transacoes;
+
+SELECT COUNT(1) FROM banco; --colocando 1, retornará o total de registros. Total 151
+SELECT COUNT(1) FROM agencia; --Total 296
+
+-- Quantas agencias possuem um banco? - 296
+SELECT banco.numero, banco.nome, agencia.numero, agencia.nome
+FROM banco
+JOIN agencia ON agencia.banco_numero = banco.numero;
+
+SELECT banco.numero
+FROM banco
+JOIN agencia ON agencia.banco_numero = banco.numero
+GROUP BY banco.numero;
+
+SELECT COUNT(DISTINCT banco.numero)
+FROM banco
+JOIN agencia ON agencia.banco_numero = banco.numero;
+
+--LEFT JOIN
+SELECT banco.numero, banco.nome, agencia.numero, agencia.nome
+FROM banco
+LEFT JOIN agencia ON agencia.banco_numero = banco.numero;
+
+--RIGHT JOIN
+SELECT agencia.numero, agencia.nome, banco.numero, banco.nome
+FROM agencia
+RIGHT JOIN banco ON banco.numero = agencia.banco_numero;
+
+SELECT agencia.numero, agencia.nome, banco.numero, banco.nome
+FROM agencia
+LEFT JOIN banco ON banco.numero = agencia.banco_numero;
+
+--FULL JOIN
+SELECT banco.numero, banco.nome, agencia.numero, agencia.nome
+FROM banco
+LEFT JOIN agencia ON agencia.banco_numero = banco.numero;
+
+CREATE TABLE IF NOT EXISTS teste_a (id SERIAL PRIMARY KEY, valor VARCHAR(10));
+CREATE TABLE IF NOT EXISTS teste_b (id SERIAL PRIMARY KEY, valor VARCHAR(10));
+
+INSERT INTO teste_a (valor) VALUES ('teste1');
+INSERT INTO teste_a (valor) VALUES ('teste2');
+INSERT INTO teste_a (valor) VALUES ('teste3');
+INSERT INTO teste_a (valor) VALUES ('teste4');
+
+INSERT INTO teste_b (valor) VALUES ('testea');
+INSERT INTO teste_b (valor) VALUES ('testeb');
+INSERT INTO teste_b (valor) VALUES ('testec');
+INSERT INTO teste_b (valor) VALUES ('tested');
+
+SELECT tbla.valor, tblb.valor
+FROM teste_a tbla
+CROSS JOIN teste_b tblb;
+
+DROP TABLE IF EXISTS teste_a;
+DROP TABLE IF EXISTS teste_b;
+
+SELECT  banco.nome,
+		agencia.nome,
+		conta_corrente.numero,
+		conta_corrente.digito,
+		cliente.nome
+FROM banco
+JOIN agencia ON agencia.banco_numero = banco.numero
+JOIN conta_corrente
+	 -- ON conta_corrente.banco_numero = agencia.banco_numero. Outra forma abaixo
+	 ON conta_corrente.banco_numero = banco.numero
+	 AND conta_corrente.agencia_numero = agencia.numero
+JOIN cliente
+	 ON cliente.numero = conta_corrente.cliente_numero;
+	 
+--Mesmo select acima incluindo as transações e os tipos de transações de cada cliente
+
+SELECT  banco.nome,
+		agencia.nome,
+		conta_corrente.numero,
+		conta_corrente.digito,
+		cliente.nome,
+		cliente_transacoes.valor,
+		cliente_transacoes.tipo_transacao_id		
+FROM banco
+JOIN agencia ON agencia.banco_numero = banco.numero
+JOIN conta_corrente
+	 -- ON conta_corrente.banco_numero = agencia.banco_numero. Outra forma abaixo
+	 ON conta_corrente.banco_numero = banco.numero
+	 AND conta_corrente.agencia_numero = agencia.numero
+JOIN cliente
+	 ON cliente.numero = conta_corrente.cliente_numero
+JOIN cliente_transacoes
+	 ON cliente_transacoes.conta_corrente_numero = conta_corrente.numero;
+
+#### Otimizando o código com CTE
+
+Como Table Expression:
+
+Forma auxiliar de organizar "statements", ou seja, blocos de códigos, para consultas muito grandes, gerando tabelas temporárias e criando relacionamento entre elas.
+Dentro do statementes poder ter SELECTs, INSERTs, UPDATEs ou DELETEs.
+
+[Incluir definição de Statements]
+
+SELECT numero, nome FROM banco;
+SELECT banco_numero, numero, nome FROM agencia;
+
+WITH tbl_tmp_banco AS(
+	SELECT numero, nome
+	FROM banco
+)
+SELECT numero, nome
+FROM tbl_tmp_banco;
+
+WITH params AS(
+	SELECT 213 AS banco_numero
+), tbl_tmp_banco AS (
+	SELECT numero, nome
+	FROM banco
+	JOIN params ON params.banco_numero = banco.numero	
+)
+SELECT numero, nome
+FROM tbl_tmp_banco;
+
+-- Mesmo Statements, só que usando sub select
+SELECT banco.numero, banco.nome 
+FROM banco
+JOIN (
+	SELECT 213 AS banco_numero
+) params ON params.banco_numero = banco.numero;
+
+WITH clientes_e_transacoes AS (
+	SELECT  cliente.nome AS cliente_nome,
+			tipo_transacao.nome AS tipo_transacao_nome,
+			cliente_transacoes.valor AS tipo_transacao_valor
+	FROM cliente_transacoes
+	JOIN cliente ON cliente.numero = cliente_transacoes.cliente_numero
+	JOIN tipo_transacao ON tipo_transacao.id = cliente_transacoes.tipo_transacao_id
+)
+SELECT cliente_nome, tipo_transacao_nome, tipo_transacao_valor
+FROM clientes_e_transacoes;
+
+WITH clientes_e_transacoes AS (
+	SELECT  cliente.nome AS cliente_nome,
+			tipo_transacao.nome AS tipo_transacao_nome,
+			cliente_transacoes.valor AS tipo_transacao_valor
+	FROM cliente_transacoes
+	JOIN cliente ON cliente.numero = cliente_transacoes.cliente_numero
+	JOIN tipo_transacao ON tipo_transacao.id = cliente_transacoes.tipo_transacao_id
+	JOIN banco ON banco.numero = cliente_transacoes.banco_numero AND banco.nome ILIKE '%Itaú%'
+)
+SELECT cliente_nome, tipo_transacao_nome, tipo_transacao_valor
+FROM clientes_e_transacoes;
+
+------
+
+## Comandos avanaçdos da Structured Query Language (SQL)
+
+### Como as views auxiliam no acesso ao banco de dados
+
+São visões. 
+
+São  'camadas' que ficam a frente das tabelas.
+
+São 'alias' para uma ou  mais queries. É usado como segurança para que pessoas que não deveria ter acesso de manipulação na tabela, apenas possam consultar os dados pelas viws.
+
+Aceitam comandos de SELECT, **INSERT**, **UPDATE** e **DELETE**. Se tiver JOIN na view ela aceita somente o SELECT.
+
+CREATE [OR REPLACE] [TEMP | TEMPORARY] [RECURSIVE] VIEW name [( column_name [, ...])] 
+	[WITH (view_option_name [= view_option_value] [, ...])]
+	AS query
+	[WITH [CASCADED | LOCAL ] CHECK OPTION]
+
+**Obs.: Cuidado com o comando OR REPLACE, pois se uma VIEW tiver regras de negócios e você criar uma VVIEW com o mesmo nome, você perderá a sua VIEW substituindo-a.**
+Não define DATATYPE para VIEWS, pois assumem o tipo de dados da consulta.
+
+SELECT numero, nome, ativo
+FROM banco;
+
+CREATE OR REPLACE VIEW vw_bancos AS (
+	SELECT numero, nome, ativo
+	FROM banco
+);
+
+SELECT numero, nome, ativo
+FROM vw_bancos;
+
+CREATE OR REPLACE VIEW vw_bancos_2 (banco_numero, banco_nome, banco_ativo) AS (
+	SELECT numero, nome, ativo
+	FROM banco
+);
+
+SELECT banco_numero, banco_nome, banco_ativo
+FROM vw_bancos_2;
+
+INSERT INTO vw_bancos_2 (banco_numero, banco_nome, banco_ativo)
+VALUES (51, 'Banco Boa Ideia', TRUE);
+
+SELECT banco_numero, banco_nome, banco_ativo
+FROM vw_bancos_2
+WHERE banco_numero = 51;
+
+SELECT numero, nome, ativo FROM banco WHERE numero=51;
+
+UPDATE vw_bancos_2 SET banco_ativo = FALSE WHERE banco_numero=51;
+
+DELETE FROM vw_bancos_2 WHERE banco_numero = 51;
+
+CREATE OR REPLACE TEMPORARY VIEW vw_agencia AS (
+	SELECT nome FROM agencia
+);
+
+SELECT nome FROM vw_agencia;
+
+--EM outra aba vevrificar que a view temporária não existe
+SELECT nome FROM vw_agencia;
+
+CREATE OR REPLACE VIEW vw_bancos_ativos AS (
+	SELECT numero, nome, ativo
+	FROM banco
+	WHERE ativo IS TRUE
+) WITH LOCAL CHECK  OPTION;
+
+INSERT INTO vw_bancos_ativos (numero, nome, ativo) VALUES (51, 'Banco Boa Ideia', FALSE);
+
+CREATE OR REPLACE VIEW vw_bancos_com_a AS (
+	SELECT numero, nome, ativo
+	FROM vw_bancos_ativos
+	WHERE nome ILIKE 'a%'
+) WITH LOCAL CHECK OPTION;
+
+SELECT numero, nome, ativo FROM vw_bancos_com_a;
+
+INSERT INTO vw_bancos_com_a (numero, nome, ativo) VALUES (333, 'Alfa Omega', true);
+INSERT INTO vw_bancos_com_a (numero, nome, ativo) VALUES (331, 'Alfa Gama', false);
+INSERT INTO vw_bancos_com_a (numero, nome, ativo) VALUES (332, 'Alfa Gama Beta', false);
+
+//Abrir outra aba Query Tools
+
+CREATE TABLE IF NOT EXISTS funcionarios (
+	id SERIAL,
+	nome VARCHAR(50),
+	gerente INTEGER,
+	PRIMARY KEY (id),
+	FOREIGN KEY (gerente) REFERENCES funcionarios(id)
+);
+
+INSERT INTO funcionarios (nome, gerente) VALUES ('Ancelmo' null);
+INSERT INTO funcionarios (nome, gerente) VALUES ('Beatriz' 1);
+INSERT INTO funcionarios (nome, gerente) VALUES ('Magno' 1);
+INSERT INTO funcionarios (nome, gerente) VALUES ('Cremilda' 2);
+INSERT INTO funcionarios (nome, gerente) VALUES ('Wagner' 4);
+
+SELECT id, nome, gerente FROM funcionarios WHERE gerente IS NULL
+UNION ALL
+SELECT id, nome, gerente FROM funcionarios WHERE id = 999; --APENAS PARA EXEMPLIFICAR
+
+CREATE OR REPLACE RECURSIVE VIEW AS vw_func(id, gerente, funcionario) AS (
+	SELECT id, gerente, nome
+	FROM funcionarios
+	WHERE gerente IS NULL
+
+```sql
+UNION ALL
+
+SELECT funcioanrios.id, funcionarios.gerente, funcionarios.nome
+FROM funcionarios
+JOIN vw_func ON vw_func.id = funcionarios.gerente
+```
+);
+
+SELECT id, gerente, fucnionarios
+FROM vw_func;
+
+-- Montar a view recursiva, monstrando o nome do gerente
+
+### Conheça um dos principais conceitos de banco de dados: transações
+
+Conceito fundamental de todos os SGBDs.
+
+Conceito de múltiplas etapas/códigos reunidos em apenas 1 transação, onde **o resultado precisa ser tudo ou nada.**
+
+Exemplos:
+
+UPDATE conta SET valor = valor - 100
+WHERE nome = 'Alice'
+
+UPDATE conta SET valor = valor + 100
+WHERE nome = 'Bob'
+
+BEGIN;
+
+UPDATE conta SET valor = valor - 100
+WHERE nome = 'Alice'
+
+UPDATE conta SET valor = valor + 100
+WHERE nome = 'Bob'
+
+COMMIT;
+
+BEGIN;
+
+UPDATE conta SET valor = valor - 100
+WHERE nome = 'Alice'
+
+UPDATE conta SET valor = valor + 100
+WHERE nome = 'Bob'
+
+COMMIT; //Utilizado para aprovar a transação como forma de confirmação que ela foi realizada. Até o Commit ninguém consegue visualizar a transação.
+
+BEGIN;
+
+UPDATE conta SET valor = valor - 100
+WHERE nome = 'Alice'
+
+UPDATE conta SET valor = valor + 100
+WHERE nome = 'Bob'
+
+ROLLBACK; //Força desfazer a transação
+
+BEGIN;
+
+UPDATE conta SET valor = valor - 100
+WHERE nome = 'Alice'
+
+SAVEPOINT my_savepoint;
+
+UPDATE conta SET valor = valor + 100
+WHERE nome = 'Bob'
+-- ops ... não é para o Bob, é para o Wally!!!
+
+ROLLBACK TO my_savepoint;
+
+UPDATE conta SET valor = valor + 100
+WHERE nome = 'Wally' 
+
+COMMIT;
+
+SELECT numero, nome, ativo FROM banco ORDER BY numero;
+
+UPDATE banco SET ativo = false WHERE numero = 0;
+
+BEGIN;
+UPDATE banco SET ativo = true WHERE numero =0;
+SELECT numero, nome, ativo FROM banco WHERE numero =0;
+ROLLBACK;
+
+BEGIN;
+UPDATE banco SET ativo = true WHERE numero =0;
+COMMIT;
+
+SELECT id, gerente, nome FROM funcinarios;
+
+BEGIN;
+UPDATE funcionarios SET gerente = 2 WHERE id = 3;
+SAVEPOINT sp_func;
+UPDATE funcionarios SET gerente = null;
+ROLLBACK TO sp_func;
+UPDATE funcionarios SET gerente = 3 WHERE id = 5;
+COMMIT;
+
+### Conheça as funções que podem ser criadas pelo desenvolvedor
+
+Conjunto de códigos executados dentro de uma transação com a finalidade de facilitar a programação e obter o reaproveitamento/reutilização de códigos.
+
+Existem 4 tipos de funções:
+
+- Query language functions (funções escritas em SQL)
+- Procedural Language Functions (funções escritas em, por exemplo, PL/pgSQL ou PL/py)
+- Internal Function //Funcções internas do PostgreSQL
+- C-language Functions //Funções em C que vê compiladas no PosstgreSQL
+
+Mais informações em: https://www.postgresql.org.docs/14/external-pl.html
+
+IDEMPOTÊMCIA
+
+CREATE OR REPLACE FUNCTION [nome da função]
+
+- Mesmo nome
+- Mesmo tipo de retorno
+- Mesmo número de parâmetros/argumentos
+
+RETURNS
+
+Tipo de retorno (data type):
+
+- INTEGER
+- CHAR/VARCHAR
+- BOOLEN
+- ROW
+- TABEL
+- JSON
+
+SEGURANÇA
+
+- INVOKER
+- DEFINER 
+
+Obs.: Os usuários irão executar as funções de acordo com as permissões definidas pelo usuário que criou a função. Ex: Se for definido como SuperUser, somente os usuários com esse tipo de acesso terão permissões de executar a função criada.
+
+COMPORTAMENTO
+
+[Incluir definições]
+
+SEGURANÇA E BOAS PRÁTICAS
+
+[Incluir definições]
+
+RECURSOS
+
+- COST - Custo/Row em unidades de CPU
+- ROWS - Número estimado de linhas que será analisada pelo planner.
+
+CREATE OR REPLACE FUNCTION func_somar(INTEGER,INTEGER)
+RETURNS INTEGER
+SECURITY DEFINER
+RETURNS NULL ON NULL INPUT
+LANGUAGE SQL
+AS $$
+	SELECT $1 + $2;
+$$;
+
+SELECT func_somar(1,null);
+SELECT func_somar(1,100);
+
+CREATE OR REPLACE FUNCTION func_somar(INTEGER,INTEGER)
+RETURNS INTEGER
+SECURITY DEFINER
+CALLED ON NULL INPUT
+LANGUAGE SQL
+AS $$
+	SELECT $1 + $2;
+$$;
+
+SELECT func_somar(1,null);
+
+SELECT COALESCE(null, 'daniel', 'digital')
+SELECT COALESCE(null, null, 'digital','daniel')
+
+CREATE OR REPLACE FUNCTION func_somar(INTEGER,INTEGER)
+RETURNS INTEGER
+SECURITY DEFINER
+CALLED ON NULL INPUT
+LANGUAGE SQL
+AS $$
+	SELECT COALESCE ($1,0) + COALESCE ($2, 0);
+$$;
+
+CREATE OR REPLACE FUNCTION func_somar(INTEGER,INTEGER)
+RETURNS INTEGER
+SECURITY DEFINER
+CALLED ON NULL INPUT
+LANGUAGE SQL
+AS $$
+	SELECT COALESCE ($1,0) + COALESCE ($2, 100);
+$$;
+
+CREATE OR REPLACE FUNCTION bancos_add(p_numero INTEGER, p_nome VARCHAR, p_ativo BOOLEAN)
+RETURNS INTEGER
+SECURITY INVOKER
+LANGUAGE PLPGSQL
+CALLED ON NULL INPUT
+AS $$
+DECLARE variavel_id INTEGER
+BEGIN
+	SELECT INTO variaevl_id numero
+	FROM banco
+	WHERE numero = p_numero;
+	
+	RETURN variavel_id;
+END; $$;
+
+SELECT bancos_add (5432, 'Banco Novo', null);
+
+CREATE OR REPLACE FUNCTION bancos_add(p_numero INTEGER, p_nome VARCHAR, p_ativo BOOLEAN)
+RETURNS INTEGER
+SECURITY INVOKER
+LANGUAGE PLPGSQL
+CALLED ON NULL INPUT
+AS $$
+DECLARE variavel_id INTEGER
+BEGIN
+	SELECT INTO variaevl_id numero
+	FROM banco
+	WHERE numero = p_numero;
+	
+	RETURN variavel_id;
+END; $$;CREATE OR REPLACE FUNCTION bancos_add(p_numero INTEGER, p_nome VARCHAR, p_ativo BOOLEAN)
+RETURNS INTEGER
+SECURITY INVOKER
+LANGUAGE PLPGSQL
+CALLED ON NULL INPUT
+AS $$
+DECLARE variavel_id INTEGER
+BEGIN
+	IF p_numero IS NULL OR p_nome IS NULL OR p_ativo IS NULL THEN
+		RETURN 0;
+	END IF;
+	
+```sql
+SELECT INTO variaevl_id numero
+FROM banco
+WHERE numero = p_numero;
+
+IF variavel_id IS NULL THEN
+	INSERT INTO banco(numero, nome, ativo)
+	VALUES (p_numero, p_nome, p_ativo);
+ELSE
+	RETURN variavel_id;
+END IF;
+
+RETURN variavel_id;
+```
+END; $$;
+
+SELECT bancos_add (5432, 'Banco Novo', FALSE);
+
+SELECT numero, nome, ativo FROM banco WHERE numero = '5432'
+
+CREATE OR REPLACE FUNCTION bancos_add(p_numero INTEGER, p_nome VARCHAR, p_ativo BOOLEAN)
+RETURNS INTEGER
+SECURITY INVOKER
+LANGUAGE PLPGSQL
+CALLED ON NULL INPUT
+AS $$
+DECLARE variavel_id INTEGER
+BEGIN
+	SELECT INTO variaevl_id numero
+	FROM banco
+	WHERE numero = p_numero;
+	
+	RETURN variavel_id;
+END; $$;CREATE OR REPLACE FUNCTION bancos_add(p_numero INTEGER, p_nome VARCHAR, p_ativo BOOLEAN)
+RETURNS INTEGER
+SECURITY INVOKER
+LANGUAGE PLPGSQL
+CALLED ON NULL INPUT
+AS $$
+DECLARE variavel_id INTEGER
+BEGIN
+	IF p_numero IS NULL OR p_nome IS NULL OR p_ativo IS NULL THEN
+		RETURN 0;
+	END IF;
+	
+```sql
+SELECT INTO variaevl_id numero
+FROM banco
+WHERE numero = p_numero;
+
+IF variavel_id IS NULL THEN
+	INSERT INTO banco(numero, nome, ativo)
+	VALUES (p_numero, p_nome, p_ativo);
+ELSE
+	RETURN variavel_id;
+END IF;
+
+SELECT INTO variaevl_id numero
+FROM banco
+WHERE numero = p_numero;
+
+RETURN variavel_id;
+```
+END; $$;
+
+SELECT bancos_add (5433, 'Banco Novo', TRUE);
+SELECT numero, nome, ativo FROM banco WHERE numero = '5433'
+
