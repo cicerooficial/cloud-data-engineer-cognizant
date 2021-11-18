@@ -1,0 +1,161 @@
+# Fundamentos de ETL com Python
+
+## Fundamentos de ETL
+
+### Introdução ao ETL - Definição
+
+Cada processo de ETL pode ser extraído de diversas fontes de dados, seja em lotes(bath) ou Streaming, por isso , deve ser analisado cada contexto. Todo processo de ETL deve manter o ACID dos dados.
+
+### Por que precisamos de ETL?
+
+Precisamos do processo pois o gerente precisa de informações. Como tomar decisão se os dados estão em diversas fontes?. 
+
+É escalonado período de menos trabalho para fazer o processo de extração e processamento. Além dos dados em Streaming.
+
+### Visão geral sobre ETL
+
+- Data Sources - Local onde armazenam dados extraídos de diferentes fontes de dados.
+- Data FLow / Pipeline
+  - ETL - Local onde ocorre os processos transformação (validação, limpeza, normalização, agregação, carregamento, etc) .
+  - Data Warehouse - Local onde é armazenado os dados normalizados.
+- BI Results
+  - Local onde é usado ferramentas de análise de dados - OLAP Analysts, Data Mining, Data Visualization, Reports, Dashbopards, Alerts, etc.
+
+### Ferramentas e Pacotes
+
+- Apache Airflow - Concebido pelos engenheiros do AirBnB, para montar um gerenciamento de Workflows para intervir programando. Empresas como Tesla e Spotfy também usam para processos de ETL.
+- Luigi - Construído pela Spotfy, Realizar processo simples de ETL.
+- Bonobo - Kit de ferramentas de processamentos de ETL em Python de forma rápida. Grande diferencial é que é possível extrair processos em paralelo, com extração de dados de diversas fontes.
+- Bubbles - Conjunto de ferramentas para processar, auditar, inspecionar dados. Diferencial é a compreensão e transparência do processo de ETL.
+- petl - Facil de usar em Python, fácil construção de ETL. Não foi projetado para pipelines muito grandes. É parecido com Pandas.
+- Pandas - Parecido com o petl, mas pode ser usado com uma maior fonte de dados.
+
+**Para saber mais**:
+
+- http://airflow.apache.org/
+- https://luigi.readthedocs.io/en/stable
+- https://www.bonobo-project.org/
+- http://bubbles.databrewery.org/
+- https://petl.readthedocs.io/en/stable/
+- **https://pandas.pydata.org/**
+
+------
+
+## Prepração do projeto ETL
+
+Instalação e configuração do ambiente - Jupyter no navegador
+
+- https://jupyter.org/
+- https://jupyter.org/try
+
+Instalação e configuração do ambiente - Jupyter na máquina
+
+- https://jupyter.org/install.html
+
+Conheça a ferramenta Anaconda
+
+- https://www.anaconda.com/products/individual
+
+Origem dos dados acessíveis para o projeto
+
+- CENIPA - Ocorrências Aeronáuticas na Aviação Civil Brasileira - https://dados.gov.br/dataset/ocorrencias-aeronauticas-da-aviacao-civil-brasileira
+- Entendendo o modelo de dados - http://sistema.cenipa.aer.mil.br/cenipa/media/opendata/modelo_dados.png
+- Fazer download da ocorrência para acessar de visualização - http://landpage-h.cgu.gov.br/dadosabertos/index.php?url=http://sistema.cenipa.aer.mil.br/cenipa/media/opendata/ocorrencia.csv
+
+Visualização dos dados da planilha
+
+------
+
+## Desenvolvimento do projeto ETL - Extração e validação
+
+Como a extração de dados será realizada
+
+1. Abrir o Anaconda para acessar o jupyter-notebook
+
+Realizando extração de dados - Parte 1
+
+Realizando extração de dados - Parte 2
+
+Como validar a extração de dados - Parte 1
+
+Como validar a extração de dados - Parte 2
+
+Como validar a extração de dados - Parte 3
+
+Como validar a extração de dados - Parte 4
+
+Como validar a extração de dados - Parte 5
+
+Como validar a extração de dados - Parte 6
+
+------
+
+## Desenvolvimento do projeto ETL - Limpeza
+
+Introdução ao tema de Limpeza
+
+Como a limpeza de dados será realizada
+
+Realizando a limpeza de dados - Parte 1
+
+Realizando a limpeza de dados - Parte 2
+
+Realizando a limpeza de dados - Parte 3
+
+Realizando a limpeza de dados - Parte 4
+
+------
+
+## Desenvolvimento do projeto ETL - Transformação
+
+Introdução ao tema de Transformação
+
+Realizando a transformação de dados - Parte 1
+
+Realizando a transformação de dados - Parte 2
+
+Realizando a transformação de dados - Parte 3
+
+Realizando a transformação de dados - Parte 4
+
+Realizando a transformação de dados - Parte 5
+
+Realizando a transformação de dados - Parte 6
+
+Realizando a transformação de dados - Parte 7
+
+Realizando a transformação de dados - Parte 8
+
+Realizando a transformação de dados - Parte 9
+
+Realizando a transformação de dados - Parte 10
+
+Realizando a transformação de dados - Parte 11
+
+Realizando a transformação de dados - Parte 12
+
+Realizando a transformação de dados - Parte 13
+
+------
+
+Slide - https://drive.google.com/drive/folders/1ldrsSLnFUG0Cf2JLYsI1IHn5gU5MxrJw
+
+Github - https://github.com/ftiosso/dio-curso-etl
+
+Para saber mais:
+
+- •**Leitura de arquivo** **csv** **(****read_csv)
+
+  https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html**
+
+- •**Validação:** **Pandera**
+
+  *https://pandera.readthedocs.io/en/stable/**
+
+- •**Limpeza: Valores ausentes**
+
+  *https://pandas.pydata.org/pandas-docs/stable/user_guide/missing_data.html**
+
+- •**Transformação: Variações de filtros (tempo execução)**
+
+  *https://medium.com/data-hackers/a-maneira-eficiente-de-filtrar-um-data-frame-pandas-4158a4e37c10**
