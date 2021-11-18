@@ -1,0 +1,112 @@
+# Explorando o poder do NoSQL com Cassandra e HBase
+
+## Conceitos de NoSQL e Arquitetura
+
+### Introdução a NoSQL
+
+NoSQL = “No SQL”, “Não SQL” ou “Não Relacional”
+NoSQL = “Not Only SQL”
+
+O NoSQL emergiu como uma alternativa de banco de dados não relacionado, normalmente evitando operações de “join”, é distribuído, open-source, escalável na horizontal, livre de modelagens ou schema (não é necessário fixar modelos para as tabelas), suporta replicação, acesso via API de operações e eventualmente consistente.
+
+### Relacional x NoSQL
+
+| Quando considerar NoSQL                                      | Quando considerar Relacional                                 |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Carga de trabalho de alto volume que exigem grande escala    | Carga de trabalho é consistente e requer escala média para grande |
+| Carga de trabalho não exigem garantias do ACID               | Garantias de ACID são necessárias                            |
+| Os dados são dinâmicos e frequentemente alterados            | Dados são previsíveis e altamente estruturados               |
+| Os dados podem ser expressos sem relações (joins)            | Os dados são expressos de maneira relacional                 |
+| Alto velocidade de gravação e a segurança de gravação não é crítica | A garantia de gravação é um requisito                        |
+| Consulta de dados é simples e tende a ser simples            | Consulta se relatórios complexos                             |
+| Dados exigem uma ampla distribuição geográfica               | Usuários são mais centralizados                              |
+
+### Tipos de NoSQL
+
+- SQL - Relacional
+- Analytical (OLAP)
+- NoSQL - Key-Value, Colum Family, Graph, Document
+
+### Teorema de CAP
+
+O teorema CAP ou teorema de Brewer indica que o armazenamento de dados distribuídos só podem atender dois dos três atributos: Consistência, Disponibilidade, Partição Tolerante a Falhas.
+Tanto Hadoop e HBase atendem CP, porque possuem um ponto de falha que é respectivamente o NamedNode e HMaster que não possuem redundância dos dados dos próprios serviços para todos os nós do cluster.
+
+### Por que NoSQL no Big Data
+
+Limitações do Hadoop
+•Hadoop (MapReduce) pode executar apenas processamento batch e os dados são acessados de forma sequencial, isso significa que é necessário percorrer todo o conjunto de arquivos (scan search) mesmo para os jobs mais simples.
+Cenário
+•Um grande conjunto de dados (dataset) quando processado com um outro conjunto de dados, ambos serão processados de maneira sequencial, nesse momento uma nova solução é necessária para acessar qualquer ponto do dataset (linhas) e que leve um tempo menor para retornar.
+•Aplicações como HBase, Cassandra, Dynamo e MongoDB, etc, são banco dados que armazenam grandes quantidade de dados e os acessos à esses dados são realizados de forma aleatória em termos de posição do registro e do tempo.
+
+### O que é Apache HBase
+
+HBase é um banco de dados **distribuído** e **orientado a colunas** (Column Family ou Wide Column).
+Uma definição mais técnica:
+
+- O armazenamento do HBase é um esparso, distribuído, persistente, multidimensional e ordenado **Map**.
+- As maiores desvantagens do Hbase é não ter uma linguagem própria de SQL, não suportar índices em colunas fora do rowkey e não suportar tabelas secundárias de índices. Sempre busca a informação da linha pela chave.
+- A maior vantagem é a facilidade e integração com o ecossistemas Hadoop.
+- **Map** é indexado por uma linha chave **(row key)**, coluna chave (column key), e um coluna timestamp.
+- Cada valor no **Map** é interpretado como um vetor de bytes **(array of bytes)**.
+- O **array of bytes** nos permite gravar portanto qualquer informação se for necessário, inclusive documentos, arquivos JSON, CSV, etc.
+
+Portanto podemos entender que o núcleo de dados do HBase é um Map.
+Na maioria das linguagens de programação essa abstração de estrutura de dados existe e pode ser representada como um conjunto de chaves e conjunto de valores. **Cada chave é associada à um valor**.
+
+Multidimensional e Ordenado
+Esquecendo o conceito tradicional de linhas e colunas do mundo relacional, pense no multidimensional como um Map que contém Maps.
+
+### Arquitetura do HBase
+
+HMaster - Direciona a requisição para o Region Server exato de onde está a informação.
+
+Region - Quem faz a consulta direta no HDFS.
+
+HBase - O cliente HBase se comunica com os RegionServer através do Zookeeper.
+
+Zookeper - O Apache Zookeeper é o responsável por dar visibilidade a todos os nós de serviços do HBase de quem é o master atual. Toda configuração que é padrão para cada um dos papéis são armazenados no Zookeeper, portanto ele tem um papel fundamental de manter sincronizado toda a parametrização em comum para todos os nós.
+
+Apache HDFS
+É o sistema de arquivos do ecossistema do Hadoop. Cada arquivo está armazenado em múltiplos blocos e mantem tolerância a falhas, os blocos são replicados pelos cluster Hadoop.
+
+HDFS é utilizado pelo componentes do HBase.
+
+Os arquivos gerenciados pelo HBase são criados dentro do HDFS.
+
+| HBASE                                                        | HDFS com Hive/MR                                           |
+| ------------------------------------------------------------ | ---------------------------------------------------------- |
+| Baixa latêncianas operações                                  | Alta latência nas operações                                |
+| Acesso a leiturae gravação aleatória                         | Gravação única e leitura muita vezes                       |
+| Acessado através de comandos shell, cliente API em Java, REST, Avro ou Thrift | Acessado primeiramente através dos Jobs do MR (Map Reduce) |
+
+### O que é Apache Cassandra, sua arquitetura e componentes
+
+O Cassandra é um banco de dados distribuído e orientado a colunas (Wide Column).
+Diferente do Hbase, os dados armazenados são tipados e há conceitos mais complexos de modelagem como chave primária composta, partitionkey e cluster key.
+O Cassandra possui a linguagem SQL (**CQL**) contém semelhante com SQL ANSI porém algumas operações não são suportadas / recomendadas, por exemplo: joins, alguns tipos de agrupamentos e tipos de filtros.
+A recomendação para modelagem de dados no Cassandra, é pensar em quais query devem ser consumidas e agregar as informações em uma determinada tabela.
+Uma grande diferença para o Hbase, é que o **Cassandra suporta tabela secundárias de índices e permite filtros em colunas fora da primary key**.
+
+A característica principal do Cassandra é armazenar em múltiplos nós sem nenhum ponto de falha. Caso algum nó cair, ele sabe qual nó replicar devido a replicação.
+Conexão entre os nós é realizada de ponto a ponta, utilizando um protocolo chamado Gossip. 
+É possível fazer segregação entre databases, assim uma informação pode ter melhor performance de busca em um database do que em outro.
+
+------
+
+## Comandos Gerais
+
+### Cenários de utilização
+
+1. Utilizado como banco de dados para aplicações Web e aplicativos móveis. Por meio de integrações REST é possível fazer essa integração com o HBase, é possível mas é mais utilizado para o Cassandra.
+2. Cenário mais atual n o mundo do bigdata. Utilizado como repositório para guardar uma cópia e/ou replicador dos dados vindo de serviços de eventos antes da consolidação final.
+3. Enriquecimento dos dados finais com dados armazenados no HBase. Por exemplo: lookups.
+   Como há o versionamento padrão do Hbase, é possível ter o rastro das informações alteradas para cada rowKey.
+
+------
+
+Github: https://github.com/pentguard/DIO-Aceleracao-4-HBase-Cassandra
+
+Slides: https://drive.google.com/file/d/1nfzVpbwwB8d99RY8BEvjaQJ-vYx6o56X/view
+
