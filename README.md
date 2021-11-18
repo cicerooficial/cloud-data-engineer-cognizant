@@ -94,10 +94,6 @@ Náo houve pré requisitos necessário. Apenas planejamento de tempo e vontade e
 
   Neste Labs será apresentada a biblioteca Pandas, uma biblioteca Python de código aberto para análise de dados. Ela dá ao Python a capacidade de trabalhar com dados do tipo planilha, permitindo carregar, manipular e combinar dados rapidamente, entre outras funções.
 
-- ### ⬜[Resolvendo algoritmos com Python - 1 hora]()
-
-  Nesse desafio de codificação você irá praticar através do desenvolvimento de algoritmos os conceitos de pensamento computacional apresentados nas aulas e exercícios anteriores.
-
 - ### ⬜[Monitoramento de clusters Hadoop de alto nível com HDFS e YARN - 4 horas]()
 
   Explore o armazenamento de dados em disco por meio do HDFS (Hadoop Distributed File System) e entenda como gerenciar recursos utilizando o YARN (Yet Another Resource Negotiator). Com isso, você se familiariza com duas das principais ferramentas de um ecossistema Hadoop, com ênfase no monitoramento de clusters.
@@ -138,12 +134,8 @@ Náo houve pré requisitos necessário. Apenas planejamento de tempo e vontade e
 
   Com base no repositório disponibilizado pelo expert, te desafiamos a replicar e, porque não, melhorar o algoritmo de extração/contabilização de palavras. Para isso, você pode ordenar as palavras por ocorrência e não por ordem alfabética (apresentando as mais citadas no texto com prioridade), por exemplo. Sinta-se à vontade para evoluir o algoritmo de outras formas ;)
 
-- ### ⬜[Desafios matemáticos em Python - 1 hora]()
-
-  Nesse desafio de codificação você irá praticar através do desenvolvimento de algoritmos os conceitos de pensamento computacional apresentados nas aulas e exercícios anteriores.
-
 ------
 
-Objetivo
+## Objetivo
 
 Para recebimento do certificado de conclusão, é necessário concluir todas as aulas, desafios e envio dos projetos. Todos estes estão são mencionados no tópico [Descrição do programa]().
