@@ -1,0 +1,202 @@
+1. Introdução ao Linux e configuração inicial
+
+2. Conhecendo o terminal Linux e seus atalhos
+
+
+3. Comandos para manipulação de arquivos e textos e redirecionamento
+
+4. Diretórios do Linux e Comandos de Sistema
+
+5. Fundamentos de Rede e Comandos de Rede
+
+6. Fuçando no Linux com comandos diversos
+
+history: mostrar histórico de comandos
+history -c: limpa histórico de comandos
+
+alias hh='history': Dar nome (criar variável) ao comando
+
+nl arquivo.txt: Mostra o arquivo assim como o cat e mostra o número de linhas
+
+wc -l arquivo.txt: Retorna o número de linhas de um arquivo.
+wc -w arquivo.txt: Retorna o número de palavras de um arquivo.
+wc -m arquivo.txt: Retorna o número de caracteres de um arquivo.
+
+ls -a: Retorna os arquivos ocultos
+cmp arquivo1.txt arquivo2.txt: Compara arquivos
+
+diff arquivo.txt: Retorna qual a diferença do arquivo
+
+sort -n arquivoNumerico.txt: Retorna os números de forma ordenada
+
+last reboot: Retorna todas as informações de inicialização do sistema
+
+route -n: Mostra todas as tabelas de roteamento IP do Kernel
+
+time comando: Retorna o tempo de processo do comando a ser executado
+
+uptime: Mostra o tempo que o sistema está ativo
+
+cowsay "frase": Retona a frase com uma "vaquinha"
+xcowsay: Retona a frase com uma "vaquinha" pulando da tela
+cmatrix: Efeito do filme matrix
+
+init 0: Desliga a máquina agora
+telinit0: Desliga a máquina agora
+halt: Pede autenticação para desligar a máquina
+seq numeroInicial numeroFinal: Imprime uma sequencia de números
+
+Acesso de máquinas virtuais on-line
+https://bellard.org/jslinux/
+
+
+7. Controle de usuários, grupos e permissões
+
+sudo adduser <nomedoUsuario>: Adicionar um novo usuário
+su <nomedoUsuario>: Alterar de usuario
+passwd <nomedoUsuario>: Alterar a senha do usuario
+lastlog: Exibir informações de Login dos usuários
+last: Exibe uma listagem de entrada e saída do usuário no sistema
+logname: Nome do usuario atual logado no sistema
+id: Exibe todos os IDs do usuário
+cat /etc/passwd - Exibe todos usuários
+userdel -r <nomedoUsuario>: Remover um usuário e a pasta pessoal do usuario
+
+Grupos
+Permite organizar os usuários e define as permissões de acesso a arquivos e diretórios de forma mais fácil.
+cat /etc/group: Exibe todos os grupos existentes no sistema
+groups: Exibe todos os grupos do usuario
+addgroup <nomedoGrupo>: Criar um grupo
+adduser <nomedoUsuario> <nomedoGrupo>: Adicionar usuário a um grupo
+gpasswd -a <nomedoUsuario> <nomedoGrupo>: Adicionar outro usuario a um grupo
+gpasswd -d <nomedoUsuario> <nomedoGrupo>: Remover outro usuario a um grupo
+groupdel <nomedoGrupo>: Remover um grupo
+
+Permissões
+Servem para restringir acessos como: leitura, escrita e execuxão, onde:
+r - read(leitura)
+w - write(escrita)
+x - eXecution(execução)
+
+ls -lh: Verificar permissões em um diretório, tamanho do arquivo, data de criação, dono do usuário, grupos que pertence.
+
+TABELA OCTAL
+User(owner)  Group   Other
+r w x	     r w x   r w x
+4 2 1	     4 2 1   4 2 1
+
+drwxr-xr-x: d(diretório) rwx (dono) r-x(user no grupo) r-x(outros users do grupo)
+*r-x(permissão de leitura, sem permissão de escrita, permissão de execução copiar, colar, etc.)
+-rw-rw-r--: -(arquivo) rw- (dono) rw-(user no grupo) r--(outros users do grupo)
+*rw-(permissão de leitura, permissão de escrita, sem permissão de execução)
+
+chmod: Mudar permissão de um arquivo ou diretório
+
+Modo Octal (Máscara composta por números sob a base 8, ou seja, de 0 a 7)
+Primeiro dígito represetna o dono do arquivo/grupo (u)
+O segundo dígito representa o grupo (g)
+O terceiro dígito representa os outros (o)
+*Permissão são específicas para cada grupo
+
+Comando chmod
+chmod 000 - Altera a permisão do arquivo/grupo para nada
+chmod 100 - Altera a permisão do arquivo/grupo para somente modificação
+chmod 200 - Altera a permisão do arquivo/grupo para somente escrita
+chmod 300 - Altera a permisão do arquivo/grupo para escrita e modificação
+chmod 400 - Altera a permisão do arquivo/grupo para leitura
+chmod 500 - Altera a permisão do arquivo/grupo para leitura e modificação
+chmod 600 - Altera a permisão do arquivo/grupo para leitura e escrita
+chmod 700 - Altera a permisão do arquivo/grupo para leitura, escrita e modificação
+* O mesmo serve para as outras duas casas.
+
+*sudo su: Entra em modo root
+
+8. Compactação, descompactação e arquivamento
+Compactadores são programas que diminuem o tamanho de um arquivo ou diretório.
+Extensões identificam o tipo de um arquivo e o programa necessário para executar o mesmo.
+
+gzip <nomedoArquivo>.txt: Compactador muito usado de exelente compactação.
+gunzip arquivo.txt.gz: Descompacta arquivos gzip
+gzip -9 arquivo.txt: Usa a compactação máxima.
+
+zip: <nomedaCompactação>.zip arquivo.txt: Compactar o arquivo para .zip
+unzip <nomedoArquivozip>.zip: Descompactar o arquivo .zip
+
+bzip2: Compactador mais atual que o gzip e zip
+bzip2 <nomedoArquivo>.txt
+unbzip2 -d <nomedoArquivobzip2>.bzip2: Descompatar o arquivo .bzip2
+
+rar - Compactador que precisa ser instalado na sua primeira utilização
+
+rar a <nomedoArquivorar>.rar <nomedoArquivo>.txt
+*a: Ação
+rar x <nomedoArquivorar>.rar: Descompatar arquivo rar
+
+Arquivadores
+Junta várioas arquivos em um arquivo só.
+
+tar: O tar pe um arquivador muito utilizado no Linux
+
+tar -cf <nomedoArquivotar>.tar <arquivos>.txt: Compactar o arquivo em tar
+tar -xvf <nomedoArquivotargz>.tar.gz: Descompatar arquivo .tar e tar.gz
+
+
+9. Gerenciamento de pacotes
+Pacotes: Programas colocados dentro de um arquivo identificado por sua extensão, e incluem 
+arquivos necessários para a instalação de programa. Ex: .deb, .rpm e outros.
+
+Gerenciadores de pacotes são sistemas que possuem resolução automática de dependência entre pacotes, método fácil de instalação de pacotes. Ex: dpkg, apt e yum.
+
+Instalação de pacotes/programas com apt
+sudo apt install <nomedoPacote>
+
+Atualização de pacotes/programas com apt
+sudo apt upgrade <nomedoPacote>
+
+Remoção de pacotes/programas com apt
+sudo apt remove <nomedoPacote>
+
+Atualização do sistemas, pacotes, programas, bibliotecas, arquivos, etc com apt.
+
+apt update
+apt upgrade
+apt update && apt upgrade
+*sudo su: Entra em modo root
+
+Sites de pacotes
+pkgs.org
+rpm.pbone.net
+
+*Obs.: Nenhum desses comandos pode ser parado pois pode corromper o processo.
+Instalação de pacotes/programas .deb com dpkg
+sudo dpkg -i <nomedoPacote>
+
+Descrição do Pacote
+sudo dpkg -I <nomedoPacote>.deb
+
+Remoção de pacotes/programas .deb com dpkg
+sudo dpkg -r <nomedoPacote>
+*Usar o comando de descrição para pegar o nome do pacote na linha Package:
+
+Gerenciado RPM - Fedora
+
+Instalação de pacotes/programas .rpm
+rpm -vh <nomedoPacote>.rpm
+*Falha de dependencias
+sudo rpm -ivh --nodeps <nomedoPacote>.rpm
+
+Atualização de pacotes/programas .rpm
+rpm -U <nomedoPacote>.rpm
+
+Remoção de pacotes/programas .rpm
+rpm -e <nomedoPacote>.rpm
+
+Instalação de pacotes/programas YUM
+sudo yum install <nomedoPacote>
+
+Atualização de pacotes/programas YUM
+sudo yum update <nomedopacote>
+
+Remoção de pacotes/programas YUM
+sudo yum remove <nomedopacote>
+
