@@ -1,0 +1,557 @@
+# Introduca ao MongoDB e Banco de Dados NoSQL
+
+## Introdução ao NoSQL
+
+Not Only SQL - Não apenas SQL.
+
+Nativamente os bancos de dados NoSQL tem uma escalabilidade Horizontal. Particionando os dados (Sharding) entre os nós é o mais conhecido.
+
+Schema BD Relacional
+
+|-- tabela
+	|-- linha
+		|-- coluna
+			|-- PK
+				|-- FK
+
+Schema NoSQL - Schema-free/Schemales. Obs. Deve ser muito bem definido para explorar o melhor desempenho dos BDs NoSQL.
+
+Performance - BD Relacional depende de armazenamento em disco rígido. BD NoSQL depende do tamanho do Cluster.
+
+Transações
+
+| BD Relacional                                                | BD NoSQL                                                     |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Atomicidade - Transição é executada por completo ou não é executada | BAsically Available  - Consistente em um momento indeterminado |
+| Consistência - Estar em conformidade com os Schemas definidos. | Soft-State - Prioridade na disponibilização dos dados        |
+| Isolamento - Uma transação nunca deve interferir em outra transação. | Eventually Consistent - Não precisa ser consistente a todo tempo. |
+| Durabilidade - Uma vez que a transação concluída, o dado já deverá estar disponível |                                                              |
+
+------
+
+## Conhecendo os tipos de banco de dados NoSQL
+
+### Tipos de banco NoSQL
+
+DB-Engines Ranking - https://db-engines.com/en/ranking
+
+Tipos de banco de dados NoSQL:
+
+- Document Store - Orientado à documento. Desde Json até XML.
+- Key-Value Store - Orientados à Chave-Valor. Utilizado para guardar valores em forma de cache.
+- Wide-Column Store - Orientado à coluna. O que menos apresenta diferença entre od BD relacionais.
+- Graph Store - Orientado à grafos. Muito utilizado em Redes Sociais, detecção de fraudes, sistemas de recomendação, jogos, etc.
+
+Testar Sandbox do Neo4J - https://sandbox.neo4j.com/
+
+//Criar um nó
+CREATE (:Client {name: "Bob Esponja", age: 28, hobbies: ['Caça agua-viva, Comer hamburgues']})
+
+//Mostrar o nó
+MATCH(bob_esponja) RETURN bob_esponja
+
+//Criar nó com relacionamento
+CREATE (:Cliente {name: "Lula Molusco", age:30, hobbies:["Tocar clarinete"]}) -[:Bloqueado]->(:Client {name: "Patrick", hobbie: ['Caçar agua-viva']})
+
+//Por não compartilhar da mesma label, o objeto será mostrado em cor diferente
+CREATE (:Object)
+
+Criar um relacionamento
+MATCH (lula:Client {name:"Lula Molusco"}), (patrick:Client {name:"Patrick"}) CREATE (lula)-[:Bloqueado]->(patrick)
+
+// Exluir o relacionamento
+MATCH (lula:Client {name:"Lula Molusco"})-[relaciona:Bloqueado]->() DELETE relaciona
+
+//Atualizando a propriedade de um nó. Os relacionamentos também podem ter as propriedades atualizadas.
+MATCH (patrick:Client {name: "Patrick"}) SET patrick.hobbies = ["Caçar agua-viva"]
+
+//Atualizando uma label de um nó
+MATCH (patrick:Client {name: "Patrick"}) SET patrick:Client_Premium
+
+### Coluna/Família de colunas
+
+Normalmente as consultas de BD relacionados à colunas devem ser utilizadas pela chave primária. Ao contrário terá queda de performance.
+
+- Keyspace: agrupamento de familias de colunas => database
+- Column FFamily/table: agrupamento de colunas => table
+- Row key: chave que representa uma linha de coluna => Primary Key
+- Colum: representa um valor contendo: Name, Value Timestamp
+
+BD Cassandra poderia ser utilizado para registro de transações(compras, resultados de testes, filmes assistidos, localização mais recente de filmes, etc.) ou rastreamento de praticamente qualquer coisa (status de pedido, pacote, etc.) 
+
+https://katacoda.com/datastax/courses/cassandra-try-it-out/try-cql
+
+```cassandra
+cqlsh> CREATE KEYSPACE fenda_biquini WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
+
+cqlsh> use fenda_biquini ;
+
+cqlsh:fenda_biquini> CREATE COLUMNFAMILY cliente (name TEXT PRIMARY KEY, age int);
+
+cqlsh:fenda_biquini> SELECT * FROM cliente;
+
+cqlsh:fenda_biquini> INSERT INTO cliente (name, age) VALUES ('Bob Esponja', 38);
+
+cqlsh:fenda_biquini> SELECT * FROM cliente;
+
+cqlsh:fenda_biquini> INSERT INTO cliente JSON '{"name": "Patrick"}';
+
+cqlsh:fenda_biquini> SELECT * FROM cliente;
+
+SELECT age, WRITETIME(age) FROM cliente;
+
+cqlsh:fenda_biquini> SELECT * FROM cliente WHERE name = 'Bob Esponja';
+
+ name        | age
+-------------+-----
+ Bob Esponja |  38
+
+(1 rows)
+cqlsh:fenda_biquini> SELECT JSON * from cliente;
+
+cqlsh:fenda_biquini> SELECT * FROM cliente WHERE name = 'Bob Esponja';
+
+ name        | age
+-------------+-----
+ Bob Esponja |  38
+
+(1 rows)
+cqlsh:fenda_biquini> SELECT JSON * from cliente;
+
+(2 rows)
+
+cqlsh:fenda_biquini> UPDATE cliente SET age=13 WHERE name='Patrick';
+cqlsh:fenda_biquini> SELECT JSON * from cliente;
+
+ [json]
+
+ {"name": "Bob Esponja", "age": 38}
+     {"name": "Patrick", "age": 13}
+
+(2 rows)
+
+cqlsh:fenda_biquini> UPDATE cliente SET hobby='Caçar agua-viva' WHERE name='Patrick';
+
+cqlsh:fenda_biquini> SELECT age, WRITETIME(age), hobby, WRITETIME(hobby) FROM cliente;
+
+ age | writetime(age)   | hobby           | writetime(hobby)
+-----+------------------+-----------------+------------------
+  38 | 1636572369382109 |            null |             null
+  13 | 1636572678274907 | Caçar agua-viva | 1636572788681087
+
+(2 rows)
+cqlsh:fenda_biquini> SELECT age, WRITETIME(age), hobby, WRITETIME(hobby) FROM cliente WHERE name='Patrick';
+
+ age | writetime(age)   | hobby           | writetime(hobby)
+-----+------------------+-----------------+------------------
+  13 | 1636572678274907 | Caçar agua-viva | 1636572788681087
+
+(1 rows)
+
+cqlsh:fenda_biquini> DELETE FROM cliente WHERE name=' Bob Esponja';
+
+cqlsh:fenda_biquini> SELECT * FROM system_schema.columns WHERE keyspace_name='fendabiquini';
+```
+
+### Chave-valor
+
+BD Redis - É utilizado como BD, cache, mensageria e fila.
+
+⚠[Erro na plataforma]⚠
+
+### Documento
+
+- Documento é um dado autocontido ou auto descritivo. Todas as informações que precisar para existir estará dentro dele.
+- Permite redundância e inconsistência.
+- Livre para schemas podendo utilizar JSON, XML e outros.
+
+------
+
+## Introdução ao MongoDB e instalação
+
+### Introdução ao MongoDB
+
+Características
+
+- BD de código aberto com alta performance. Não precisando definir os schemas antes de iniciar a operação de escrita dos dados.
+- Utiliza o BSON para armazenar os dados = JSON com binários com par de chaves e valores.
+- Pronto para fazer o escalamento Horizontal.
+- Contém operações de MapReduce para se trabalhar com grandes volumes de dados.
+
+- Documento => Tupla/Registro
+- Collection => Tabela
+- Embedding/Linking => Join
+
+Quando usar:
+
+- Nativo para lidar com grandes volumes de dados
+- Dados não necessariamente estruturados
+
+Quando não usar:
+
+- Necessidade de relacionamentos/joins. Pois os joins já devem ser pensados para todas as informações parentes serem unificados nos documentos.
+- Propriedade ACID e transações são importantes.
+- Curiosidade: Diversas entidades de pagamento não homologam sistemas cujo dados financeiros dos clientes não estejam em bancos de dados relacionais tradicionais. 
+
+### Instalação
+
+//Via terminal criando um container docker
+https://hub.docker.com/_/mongo
+
+// Ferramenta para se trabalhar com MongoDB
+https://studio3t.com/
+
+// Mongo Compass, para acesso local e remoto
+https://www.mongodb.com/try/download/community
+
+### MongoDB Cloud
+
+//Criar cluster e utilizar o Mongo via Cloud através do Mongo Atlas
+https://www.mongodb.com/
+
+------
+
+## Schema Design e boas práticas
+
+### Schema Design
+
+Recomendado trabalhar com relacionamentos Embedding.
+
+Documentos com referência de outros documentos ou collections. 
+
+MongoDB não tem conceito de Foreign Key.
+
+Relacionamento por Embedding PROS  :
+
+- Consulta informações em uma unica query
+- Atualiza o registro em uma única operação
+
+Relacionamento por Embedding CONTRAS:
+
+- Limite de 16Mb por documento
+
+Relacionamento por Referência PROS:
+
+- Documentos pequenos 
+- Não duplica informações
+- Usado quando os dados não são acessados em todas as consultas
+
+Relacionamento por Referência CONTRAS:
+
+- Toda vez que tiver referência, você terá duas ou mais queries ou utilização do $lookup para buscar essas informações
+
+Schema Design: https://www.mongodb.com/blog/post/building-with-patterns-a-summary
+
+### Boas práticas
+
+- Evite documentos muito grandes
+- Use nomes de campos objetivos e curtos
+- Analise as suas queries utilizando explain() nos finais das queries. No MongoCompass também é possível realizar analise.
+- Atualize apenas os campos alterados
+- Evite negações em queries
+- Listas/Arrays dentro dos documentos não podem crescer limites
+
+### JSON vs BSON
+
+BSON
+
+- É uma serialização codificada em binário de documentos semelhantes a JSON.
+- Contém extensões que permitem a representação de tipos de dados que não fazem parte da especificação JSON. Por exemplo, BSON tem um tipo Date, Object ID
+- Diferente do JSONJ que só lida apenas com dados primitivos. Com o BSON podemos registrar as informações de forma customizada.
+
+------
+
+## Alguns conceitos na prática
+
+### Operações de manipulação de dados
+
+```sql
+//No terminal:
+
+mongo --host 127.0.0.1:27017 -u <username> -p <password> 
+
+show databases;
+
+use fenda_biquini;
+
+//No Robo 3T, acessar o Database > Botão direito sobre o nome do Database > Cerate Database > dio_teste. Retorno ao terminal
+
+//Criar collection: capped (dizer que a collection será limitada = true)
+
+db.createCollection("test", {capped: true, max: 2, size:2 });
+
+show collections;
+
+//Collection explicita, ela expira os dados mais antigos.
+
+db.test.insertOne("name": "Teste 1"});
+uncaught exception: SyntaxError: missing ) after argument list :
+@(shell):1:24
+db.test.insertOne({"name": "Teste 1"});
+{
+   "acknowledged" : true,
+   "insertedId" : ObjectId("618c56ce4234eabd8b8ea9c8")
+}
+db.test.find({});
+{ "id" : ObjectId("618c56ce4234eabd8b8ea9c8"), "name" : "Teste 1" }
+db.test.insertOne({"name": "Teste 2"});
+{
+   "acknowledged" : true,
+   "insertedId" : ObjectId("618c57004234eabd8b8ea9c9")
+}
+db.test.find({});
+{ "id" : ObjectId("618c56ce4234eabd8b8ea9c8"), "name" : "Teste 1" }
+{ "id" : ObjectId("618c57004234eabd8b8ea9c9"), "name" : "Teste 2" }
+db.test.insertOne({"name": "Teste 3"});
+{
+   "acknowledged" : true,
+   "insertedId" : ObjectId("618c57064234eabd8b8ea9ca")
+}
+db.test.find({});
+{ "id" : ObjectId("618c57004234eabd8b8ea9c9"), "name" : "Teste 2" }
+{ "_id" : ObjectId("618c57064234eabd8b8ea9ca"), "name" : "Teste 3" }
+
+//Collection inplicita
+
+db.test1.insertOne({"age": 10});
+{
+   "acknowledged" : true,
+   "insertedId" : ObjectId("618c57824234eabd8b8ea9cc")
+}
+db.test1.insertOne({"age": 10});
+{
+   "acknowledged" : true,
+   "insertedId" : ObjectId("618c57884234eabd8b8ea9cd")
+}
+db.test1.insertOne({"age": 10});
+{
+   "acknowledged" : true,
+   "insertedId" : ObjectId("618c57884234eabd8b8ea9ce")
+}
+db.test1.insertOne({"age": 10});
+{
+   "acknowledged" : true,
+   "insertedId" : ObjectId("618c57894234eabd8b8ea9cf")
+}
+db.test1.insertOne({"age": 10});
+{
+   "acknowledged" : true,
+   "insertedId" : ObjectId("618c57894234eabd8b8ea9d0")
+}
+db.test1.insertOne({"age": 10});
+{
+   "acknowledged" : true,
+   "insertedId" : ObjectId("618c578b4234eabd8b8ea9d1")
+}
+db.test1.insertOne({"age": 10});
+{
+   "acknowledged" : true,
+   "insertedId" : ObjectId("618c578b4234eabd8b8ea9d2")
+}
+db.test1.insertOne({"age": 10});
+{
+   "acknowledged" : true,
+   "insertedId" : ObjectId("618c578b4234eabd8b8ea9d3")
+}
+db.test1.insertOne({"age": 10});
+{
+   "acknowledged" : true,
+   "insertedId" : ObjectId("618c578b4234eabd8b8ea9d4")
+}
+db.test1.insertOne({"age": 10});
+{
+   "acknowledged" : true,
+   "insertedId" : ObjectId("618c578c4234eabd8b8ea9d5")
+}
+db.test1.insertOne({"age": 10});
+{
+   "acknowledged" : true,
+   "insertedId" : ObjectId("618c578c4234eabd8b8ea9d6")
+}
+
+db.test.find({});
+{ "id" : ObjectId("618c57064234eabd8b8ea9ca"), "name" : "Teste 3" }
+{ "id" : ObjectId("618c575c4234eabd8b8ea9cb"), "age" : 10 }
+db.test1.find({});
+{ "id" : ObjectId("618c57824234eabd8b8ea9cc"), "age" : 10 }
+{ "id" : ObjectId("618c57884234eabd8b8ea9cd"), "age" : 10 }
+{ "id" : ObjectId("618c57884234eabd8b8ea9ce"), "age" : 10 }
+{ "id" : ObjectId("618c57894234eabd8b8ea9cf"), "age" : 10 }
+{ "id" : ObjectId("618c57894234eabd8b8ea9d0"), "age" : 10 }
+{ "id" : ObjectId("618c578b4234eabd8b8ea9d1"), "age" : 10 }
+{ "id" : ObjectId("618c578b4234eabd8b8ea9d2"), "age" : 10 }
+{ "id" : ObjectId("618c578b4234eabd8b8ea9d3"), "age" : 10 }
+{ "id" : ObjectId("618c578b4234eabd8b8ea9d4"), "age" : 10 }
+{ "id" : ObjectId("618c578c4234eabd8b8ea9d5"), "age" : 10 }
+{ "_id" : ObjectId("618c578c4234eabd8b8ea9d6"), "age" : 10 }
+
+//Comando para inserir dados
+
+db.clients.insert([{"name": "Patrick", "age": 38}, {"name": "Bob Esponja"}])
+BulkWriteResult({
+   "writeErrors" : [ ],
+   "writeConcernErrors" : [ ],
+   "nInserted" : 2,
+   "nUpserted" : 0,
+   "nMatched" : 0,
+   "nModified" : 0,
+   "nRemoved" : 0,
+   "upserted" : [ ]
+})
+db.clients.find({});
+{ "_id" : ObjectId("618c58724234eabd8b8ea9d7"), "name" : "Patrick", "age" : 38 }
+{ "_id" : ObjectId("618c58724234eabd8b8ea9d8"), "name" : "Bob Esponja" }
+
+//Comando save realiza a atualização ou a inserção caso o documento não exista
+
+db.clients.save({ "_id" : ObjectId("618c58724234eabd8b8ea9d7"), "name" : "Patrick", "age" : 40 })
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+db.clients.save({"name" : "Lula Molusco", "age" : 40 })
+WriteResult({ "nInserted" : 1 })ctId("618c58724234eabd8b8ea9d7") "name" : "Lula Molusco", "age" : 40 })
+db.clients.find({});                                   ea9d7"), "name" : "Lula Molusc", "age" : 40 })
+{ "_id" : ObjectId("618c58724234eabd8b8ea9d7"), "name" : "Patrick", "age" : 40 } Molusc", "age" : 40 })
+{ "_id" : ObjectId("618c58724234eabd8b8ea9d8"), "name" : "Bob Esponja" }
+{ "_id" : ObjectId("618c59064234eabd8b8ea9d9"), "name" : "Lula Molusco", "age" : 40 }
+
+//Comando update atualiza todos os dados aos quais for realizado match nas condições passadas
+
+db.clients.update({"name" : "Bob Esponja"}, {$set :{"age": 41}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+db.clients.find({});
+{ "_id" : ObjectId("618c58724234eabd8b8ea9d7"), "name" : "Patrick", "age" : 40 }
+{ "_id" : ObjectId("618c58724234eabd8b8ea9d8"), "name" : "Bob Esponja", "age" : 41 }
+{ "_id" : ObjectId("618c59064234eabd8b8ea9d9"), "name" : "Lula Molusco", "age" : 40 }
+
+//Parâmetro multi, dentro do update, realiza várias atualizações percorrendo os documentos e alterando caso a condição for verdadeira 
+
+db.clients.update({"age" : 40}, {$set :{"age": 43}}, {multi: true})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+db.clients.find({});
+{ "_id" : ObjectId("618c58724234eabd8b8ea9d7"), "name" : "Patrick", "age" : 43 }
+{ "_id" : ObjectId("618c58724234eabd8b8ea9d8"), "name" : "Bob Esponja", "age" : 41 }
+{ "_id" : ObjectId("618c59064234eabd8b8ea9d9"), "name" : "Lula Molusco", "age" : 43 }
+db.clients.update({"age" : 43}, {$set :{"age": 44}}, {multi: true})
+WriteResult({ "nMatched" : 2, "nUpserted" : 0, "nModified" : 2 })
+db.clients.find({});
+{ "_id" : ObjectId("618c58724234eabd8b8ea9d7"), "name" : "Patrick", "age" : 44 }
+{ "_id" : ObjectId("618c58724234eabd8b8ea9d8"), "name" : "Bob Esponja", "age" : 41 }
+{ "_id" : ObjectId("618c59064234eabd8b8ea9d9"), "name" : "Lula Molusco", "age" : 44 }
+
+//updateMany é outra forma de atualizar vários documentos
+
+db.clients.updateMany({"age": 44}, {$set: {"age": 55}});
+{ "acknowledged" : true, "matchedCount" : 2, "modifiedCount" : 2 }
+db.clients.find({});
+{ "_id" : ObjectId("618c58724234eabd8b8ea9d7"), "name" : "Patrick", "age" : 55 }
+{ "_id" : ObjectId("618c58724234eabd8b8ea9d8"), "name" : "Bob Esponja", "age" : 41 }
+{ "_id" : ObjectId("618c59064234eabd8b8ea9d9"), "name" : "Lula Molusco", "age" : 55 }
+
+//Reduzindo a filtragem dos dados
+
+db.clients.find({"age": 55});
+{ "_id" : ObjectId("618c58724234eabd8b8ea9d7"), "name" : "Patrick", "age" : 55 }
+{ "_id" : ObjectId("618c59064234eabd8b8ea9d9"), "name" : "Lula Molusco", "age" : 55 }
+db.clients.find({"age": 55}).limit(1);
+{ "_id" : ObjectId("618c58724234eabd8b8ea9d7"), "name" : "Patrick", "age" : 55 }
+
+//Parâmetro in, busca uma lista de possível valores
+
+db.clients.insert({"name": "Patrick2", "age": 30})
+WriteResult({ "nInserted" : 1 })
+db.clients.find({"age": {$in: [30, 41]}})
+{ "_id" : ObjectId("618c58724234eabd8b8ea9d8"), "name" : "Bob Esponja", "age" : 41 }
+{ "_id" : ObjectId("618c5c234234eabd8b8ea9db"), "name" : "Patrick2", "age" : 30 }
+
+//Comando de decisão OR 
+
+db.clients.find({$or: [{"name": "Lula Molusco"}, {"age": 41}]})
+{ "_id" : ObjectId("618c58724234eabd8b8ea9d8"), "name" : "Bob Esponja", "age" : 41 }
+{ "_id" : ObjectId("618c59064234eabd8b8ea9d9"), "name" : "Lula Molusco", "age" : 55 }
+
+// Menor à
+
+db.clients.find({"age": {$lt: 55}})
+{ "_id" : ObjectId("618c58724234eabd8b8ea9d8"), "name" : "Bob Esponja", "age" : 41 }
+{ "_id" : ObjectId("618c5c234234eabd8b8ea9db"), "name" : "Patrick2", "age" : 30 }
+
+// Menor ou igual à 
+
+db.clients.find({"age": {$lte: 55}})
+{ "_id" : ObjectId("618c58724234eabd8b8ea9d7"), "name" : "Patrick", "age" : 55 }
+{ "_id" : ObjectId("618c58724234eabd8b8ea9d8"), "name" : "Bob Esponja", "age" : 41 }
+{ "_id" : ObjectId("618c59064234eabd8b8ea9d9"), "name" : "Lula Molusco", "age" : 55 }
+{ "_id" : ObjectId("618c5c234234eabd8b8ea9db"), "name" : "Patrick2", "age" : 30 }
+
+//DeleteOne e DeleteMany
+
+db.clients.find({})
+{ "_id" : ObjectId("618c58724234eabd8b8ea9d7"), "name" : "Patrick", "age" : 55 }
+{ "_id" : ObjectId("618c58724234eabd8b8ea9d8"), "name" : "Bob Esponja", "age" : 41 }
+{ "_id" : ObjectId("618c59064234eabd8b8ea9d9"), "name" : "Lula Molusco", "age" : 55 }
+{ "_id" : ObjectId("618c5be94234eabd8b8ea9da"), "name" : "Patrick2" }
+{ "_id" : ObjectId("618c5c234234eabd8b8ea9db"), "name" : "Patrick2", "age" : 30 }
+db.clients.deleteOne({"age": 55})
+{ "acknowledged" : true, "deletedCount" : 1 }
+db.clients.find({})
+{ "_id" : ObjectId("618c58724234eabd8b8ea9d8"), "name" : "Bob Esponja", "age" : 41 }
+{ "_id" : ObjectId("618c59064234eabd8b8ea9d9"), "name" : "Lula Molusco", "age" : 55 }
+{ "_id" : ObjectId("618c5be94234eabd8b8ea9da"), "name" : "Patrick2" }
+{ "_id" : ObjectId("618c5c234234eabd8b8ea9db"), "name" : "Patrick2", "age" : 30 }
+db.clients.update({"name" : "Bob Esponja"}, {"age" : 55})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+db.clients.find({})
+{ "_id" : ObjectId("618c58724234eabd8b8ea9d8"), "age" : 55 }
+{ "_id" : ObjectId("618c59064234eabd8b8ea9d9"), "name" : "Lula Molusco", "age" : 55 }
+{ "_id" : ObjectId("618c5be94234eabd8b8ea9da"), "name" : "Patrick2" }
+{ "_id" : ObjectId("618c5c234234eabd8b8ea9db"), "name" : "Patrick2", "age" : 30 }_
+_db.clients.deleteMany({"age": 55})
+{ "acknowledged" : true, "deletedCount" : 2 }
+db.clients.find({})
+{ "_id" : ObjectId("618c5be94234eabd8b8ea9da"), "name" : "Patrick2" }
+{ "_id" : ObjectId("618c5c234234eabd8b8ea9db"), "name" : "Patrick2", "age" : 30 }
+```
+
+### Performance e índices
+
+Índices são como referências de livros para achar as informações.
+
+No Robo 3T > dio_teste> botão direito sobre Collections > Created Collection. 
+
+Executar o scritp abaixo para gera 10.000 registros.
+
+```sql
+for(var i=0; i< 10000; i++){
+    db.clients.insert({name: "Cliente" + i, age:i});
+}
+
+//Verificar os índices criados
+
+db.getCollection('clients').find({})
+
+//Analisar a query pelo id. Assim o retorno é 1
+db.getCollection('clients').find({_id: ObjectId("618c5fafe303b2622f8fb41d")}).explain(true)
+
+// Já procurando pelo nome do cliente, ele procurará em todo documento
+db.getCollection('clients').find({name: "Cliente0"}).explain(true)
+
+//Como evitar essa busca em todo documento? Crie um novo index para que seja direcionado os indices dos nomes 
+
+db.getCollection('clients').createIndex({name: 1}, {"name": "idx_name"})
+
+db.getCollection('clients').find({name: "Cliente0"}.explain(true)
+```
+
+### Agregações
+
+É o procedimento de processar dados em uma ou mais etapas, onde o resultado de cada etapa é utilizado na etapa seguinte, de modo a retornar um resultado combinado.
+
+count e distinct são métodos de agregações de propósito único. Elas não permitem as customizações das agregações utilizando pipeline. 
+
+As pipelines mais básicas fornecem "filtros" e "operadores".
+
+Operadores: $group, $addField, etc
+
+Funções: $sum, $avg, $max e $min
+
+Operadores lógicos: $and, $or, $not, $nor
+
