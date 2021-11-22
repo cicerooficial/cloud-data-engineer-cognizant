@@ -1,0 +1,62 @@
+
+Cursos/Certificações
+https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE2PjDI
+https://docs.microsoft.com/en-us/learn/certifications/azure-data-engineer/
+https://www.microsoft.com/en-us/trainingdays
+
+______________________________________
+
+DataWarehouse:
+https://docs.microsoft.com/pt-br/learn/paths/azure-data-fundamentals-explore-data-warehouse-analytics/
+
+Ingestão de dados
+GUI - https://docs.microsoft.com/pt-br/azure/data-factory/quickstart-create-data-factory-portal
+CLI - https://docs.microsoft.com/pt-br/azure/data-factory/quickstart-create-data-factory-azure-cli
+
+______________________________________
+
+Armazenamento e processamento de dados:
+LRS - Armazenamento de redundância local. Dados serão copiados 3x apenas no data center de oriegem/local.
+ZRS - Armazenamento com redundância de zona. Dados serão copiados de maneira síncrona em 3 zonas de disponibilidades do Azure na região primária.
+GRS - Armazenamento com redundância geográfica. Dados serão copiados 3x apenas na região primária e 3x na região secundária. Serve para proteger contra cenários de causas naturais.
+GZRS - Armazenamento com redundância de zona geográfica. Dados serão copiados em 3 zonas do azure em região primária e secundária.
+
+ETL
+https://docs.microsoft.com/pt-br/azure/databricks/scenarios/databricks-extract-load-sql-data-warehouse
+
+CURSO - Engenharia de dados com o Azure Databricks
+https://docs.microsoft.com/pt-br/learn/paths/data-engineer-azure-databricks/
+
+CURSO - Azure Synapse Analytics
+https://docs.microsoft.com/pt-br/azure/synapse-analytics/
+https://docs.microsoft.com/pt-br/learn/modules/explore-azure-synapse-analytics/
+https://docs.microsoft.com/pt-br/azure/synapse-analytics/get-started
+
+______________________________________
+
+Azure HDInsight
+https://docs.microsoft.com/pt-br/azure/data-factory/tutorial-transform-data-spark-powershell
+
+Transformação de dados
+https://docs.microsoft.com/pt-br/azure/data-factory/transform-data
+
+Processamento de dados de grande escala
+https://docs.microsoft.com/pt-br/learn/paths/data-processing-with-azure-adls/
+
+Transformação de dados utilizando machine learning
+https://docs.microsoft.com/pt-br/azure/machine-learning/studio-module-reference/data-transformation
+
+Transformações avançadas de dados de streaming com o Apache Spark e o Kafka no Azure HDInsight
+https://docs.microsoft.com/pt-br/learn/modules/perform-advanced-streaming-data-transformations-with-spark-kafka/
+
+______________________________________
+
+Azure Stream Analytics
+https://docs.microsoft.com/pt-br/azure/stream-analytics/stream-analytics-introduction
+
+Criar um trabalho do Stream Analytics usando o portal do Azure
+https://docs.microsoft.com/pt-br/azure/stream-analytics/stream-analytics-quick-create-portal
+Criar um trabalho do Stream Analytics usando o Azure PowerShell
+https://docs.microsoft.com/pt-br/azure/stream-analytics/stream-analytics-quick-create-powershell
+Analisar os dados de uma chamada fraudulenta com o Stream Analytics e visualizar os resultados em um dashboard do Power BI
+https://docs.microsoft.com/pt-br/azure/stream-analytics/stream-analytics-real-time-fraud-detection
