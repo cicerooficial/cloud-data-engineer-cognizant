@@ -138,7 +138,7 @@ Náo houve pré requisitos necessário. Apenas planejamento de tempo e vontade e
 
   Com base no repositório disponibilizado pelo expert, te desafiamos a replicar e, porque não, melhorar o algoritmo de extração/contabilização de palavras. Para isso, você pode ordenar as palavras por ocorrência e não por ordem alfabética (apresentando as mais citadas no texto com prioridade), por exemplo. Sinta-se à vontade para evoluir o algoritmo de outras formas.
 
-- ### [Desafios matemáticos em Python - 1 hora]()
+- ### ⬜[Desafios matemáticos em Python - 1 hora]()
 
   Nesse desafio de codificação você irá praticar através do desenvolvimento de algoritmos os conceitos de pensamento computacional apresentados nas aulas e exercícios anteriores.
 
