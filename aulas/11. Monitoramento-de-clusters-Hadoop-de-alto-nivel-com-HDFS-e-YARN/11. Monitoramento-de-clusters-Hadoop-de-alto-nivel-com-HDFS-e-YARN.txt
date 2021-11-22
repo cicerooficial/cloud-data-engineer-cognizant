@@ -1,0 +1,22 @@
+# Monitoramento de clusters Hadoop de alto nível com HDFS e YARN
+
+HDFS
+
+Este curso tem como material complementar uma Máquina Virtual (VM) preparada com as principais ferramentas e configurações para o acompanhamento das atividades práticas.
+Nesse sentido, a VM pode ser obtida pelo seguinte link:
+
+https://drive.google.com/file/d/1CsHc311jp4EuZ8be5KGaumniGAafa8sC/view?usp=sharing
+
+Instalar a máquina virtual Everis_BigData-v3
+
+Acessar a máquina virtual:
+
+1. ssh <IP> -l <login>
+2. Login: everis | Password: everis2021
+
+execute o comando ifconfig para capturar o ip (normalmente inicial com 192...)
+
+No PuTTY acesse ssh incluindo o IP capturado. Se pedir login e senha, incluir o login e password acima.
+
+Seguir o passo a passo dos slides
+
