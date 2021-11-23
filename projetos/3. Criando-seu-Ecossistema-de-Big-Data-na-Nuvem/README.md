@@ -35,6 +35,18 @@ Neste repositório há os arquivos de configuração e execução de análise de
    * Upload de arquivo para o bucket
 * Ambiente virtual python: source venv_teste/bin/activate
   * _nano ~/.mrjob.conf_
-  * _python3 dio-live-wordcount-test.py -r emr s3://{your_s3_bucket_name}/data/SherlockHolmes.txt --output-dir=s3://{your_s3_bucket_name}/output/logs1 --cloud-tmp-dir=s3://{your_s3_bucket_name}/temp/_
+  * _python3 dio-live-wordcount-test.py -r emr s3://{your_s3_bucket_name}/data/sherlock.txt --output-dir=s3://{your_s3_bucket_name}/output/logs1 --cloud-tmp-dir=s3://{your_s3_bucket_name}/temp/_
 
+------
 
+Link de referência:
+
+Github: https://github.com/cassianobrexbit/DIO-LiveCoding-AWS-BigData
+
+Big Data: https://aws.amazon.com/pt/big-data/what-is-big-data/
+
+Apache Hadoop: https://hadoop.apache.org/
+
+Map Reduce: http://pt.wikipedia.org/wiki/MapReduce
+
+MrJob: https://mrjob.readthedocs.io/en/latest/
