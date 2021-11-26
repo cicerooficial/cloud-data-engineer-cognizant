@@ -48,6 +48,12 @@ Náo houve pré requisitos necessário. Apenas planejamento de tempo e vontade e
 
 ------
 
+## Objetivo
+
+Para recebimento do certificado de conclusão, é necessário concluir todas as aulas, desafios e envio dos projetos. Todos estes são mencionados no tópico abaixo.
+
+------
+
 ## Descrição do programa
 
 ### Aulas:
@@ -151,10 +157,3 @@ Náo houve pré requisitos necessário. Apenas planejamento de tempo e vontade e
 - ### ✅[Criando seu Ecossistema de Big Data na Nuvem - 2 horas]()
 
   Com base no repositório disponibilizado pelo expert, te desafiamos a replicar e, porque não, melhorar o algoritmo de extração/contabilização de palavras. Para isso, você pode ordenar as palavras por ocorrência e não por ordem alfabética (apresentando as mais citadas no texto com prioridade), por exemplo. Sinta-se à vontade para evoluir o algoritmo de outras formas.
-
-------
-
-## Objetivo
-
-Para recebimento do certificado de conclusão, é necessário concluir todas as aulas, desafios e envio dos projetos. Todos estes estão são mencionados no tópico [Descrição do programa](https://github.com/cicerooficial/cloud-data-engineer-cognizant#descri%C3%A7%C3%A3o-do-programa).
-
