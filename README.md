@@ -56,7 +56,7 @@ Bootcamp da DIO(Digital Inovation One) focado em engenharia de dados com cloud, 
   - [Introdução a Engenharia de Dados na AWS - 2 horas](https://github.com/cicerooficial/cloud-data-engineer-cognizant#introdu%C3%A7%C3%A3o-a-engenharia-de-dados-na-aws---2-horas)
   - [Introdução a Engenharia de Dados na Azure - 4 horas](https://github.com/cicerooficial/cloud-data-engineer-cognizant#introdu%C3%A7%C3%A3o-a-engenharia-de-dados-na-azure---4-horas)
   - [Introdução à Mensageria na Nuvem Com Kafka e Python - 1 hora](https://github.com/cicerooficial/cloud-data-engineer-cognizant#introdu%C3%A7%C3%A3o-%C3%A0-mensageria-na-nuvem-com-kafka-e-python---1-hora)
-- Desafios
+- Desafios:
   - [Resolvendo algoritmos com Python - 1 hora](https://github.com/cicerooficial/cloud-data-engineer-cognizant#resolvendo-algoritmos-com-python---1-hora)
   - [Desafios matemáticos em Python - 1 hora](https://github.com/cicerooficial/cloud-data-engineer-cognizant#desafios-matem%C3%A1ticos-em-python---1-hora)
 - Projetos:
