@@ -1,12 +1,12 @@
-# package_name
+# Pacote exercicios
 
 Description. 
 The package exercicios is used to:
 	- Práticar de lógica de programação
-
+    - #Obs.: Repositório usado apenas como modelo. O pacote não foi publicado no pip.
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install package_name
+Use the package manager [pip](https://pip.pypa.io/en/stable/) to install exercicios
 
 ```bash
 pip install exercicios
